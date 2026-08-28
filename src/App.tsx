@@ -1,3 +1,4 @@
+import { CheckSquare, LayoutGrid, ListTodo, Menu, Timer, X } from "lucide-react";
 import { useState } from "react";
 import { Card } from "./components/Card";
 import { EisenhowerMatrix } from "./components/EisenhowerMatrix";
@@ -60,8 +61,16 @@ function greeting(): string {
   return "Good evening";
 }
 
+const MOBILE_PRIMARY_NAV: { key: PageKey; label: string; icon: typeof LayoutGrid }[] = [
+  { key: "overview", label: "Overview", icon: LayoutGrid },
+  { key: "tasks", label: "Tasks", icon: ListTodo },
+  { key: "habits", label: "Habits", icon: CheckSquare },
+  { key: "focus", label: "Focus", icon: Timer },
+];
+
 export default function App() {
   const [page, setPage] = useState<PageKey>("overview");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [tasksView, setTasksView] = useState<"list" | "matrix">("list");
   const [tasks, setTasks] = useLocalStorage<Task[]>("self.tasks", []);
   const [habits, setHabits] = useLocalStorage<Habit[]>("self.habits", []);
@@ -262,19 +271,55 @@ export default function App() {
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-around overflow-x-auto border-t border-neutral-200 bg-white py-2 md:hidden">
-        {(Object.keys(PAGE_TITLES) as PageKey[]).map((key) => (
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-around border-t border-neutral-200 bg-white py-2 md:hidden">
+        {MOBILE_PRIMARY_NAV.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setPage(key)}
-            className={`shrink-0 px-2.5 py-1 text-xs font-medium ${
+            className={`flex flex-col items-center gap-0.5 px-2 py-1 text-[11px] font-medium ${
               page === key ? "text-neutral-900" : "text-neutral-400"
             }`}
           >
-            {PAGE_TITLES[key]}
+            <Icon size={20} strokeWidth={page === key ? 2.5 : 2} />
+            {label}
           </button>
         ))}
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className={`flex flex-col items-center gap-0.5 px-2 py-1 text-[11px] font-medium ${
+            !MOBILE_PRIMARY_NAV.some((n) => n.key === page) ? "text-neutral-900" : "text-neutral-400"
+          }`}
+        >
+          <Menu size={20} strokeWidth={!MOBILE_PRIMARY_NAV.some((n) => n.key === page) ? 2.5 : 2} />
+          Menu
+        </button>
       </nav>
+
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-20 flex md:hidden">
+          <button
+            aria-label="Close menu"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex-1 bg-black/30"
+          />
+          <div className="relative">
+            <Sidebar
+              active={page}
+              onNavigate={(key) => {
+                setPage(key);
+                setMobileMenuOpen(false);
+              }}
+              variant="mobile-overlay"
+            />
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="absolute right-3 top-6 flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

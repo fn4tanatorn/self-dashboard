@@ -78,12 +78,19 @@ function NavButton({
 export function Sidebar({
   active,
   onNavigate,
+  variant = "desktop",
 }: {
   active: PageKey;
   onNavigate: (page: PageKey) => void;
+  variant?: "desktop" | "mobile-overlay";
 }) {
+  const rootClass =
+    variant === "desktop"
+      ? "sticky top-0 hidden h-screen w-60 shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white px-4 py-6 md:flex"
+      : "flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-white px-4 py-6";
+
   return (
-    <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white px-4 py-6 md:flex">
+    <aside className={rootClass}>
       <div className="mb-8 flex items-center gap-2 px-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-sm font-bold text-white">
           S
