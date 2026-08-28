@@ -9,9 +9,11 @@ import { SleepLog } from "./components/SleepLog";
 import { TaskList } from "./components/TaskList";
 import { TodoistConnect } from "./components/TodoistConnect";
 import { TodoistTaskList } from "./components/TodoistTaskList";
-import { useLocalStorage } from "./hooks/useLocalStorage";
+import { useSession } from "./hooks/useSession";
+import { useSyncedCollection } from "./hooks/useSyncedCollection";
 import { useTodoist } from "./hooks/useTodoist";
 import { friendlyDate } from "./lib/date";
+import { supabase } from "./lib/push";
 import { Finances } from "./pages/Finances";
 import { Focus } from "./pages/Focus";
 import { Overview } from "./pages/Overview";
@@ -72,52 +74,34 @@ export default function App() {
   const [page, setPage] = useState<PageKey>("overview");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [tasksView, setTasksView] = useState<"list" | "matrix">("list");
-  const [tasks, setTasks] = useLocalStorage<Task[]>("self.tasks", []);
-  const [habits, setHabits] = useLocalStorage<Habit[]>("self.habits", []);
-  const [notes, setNotes] = useLocalStorage<Note[]>("self.notes", []);
-  const [goals, setGoals] = useLocalStorage<Goal[]>("self.goals", []);
-  const [identities, setIdentities] = useLocalStorage<Identity[]>("self.identities", []);
-  const [visionNotes, setVisionNotes] = useLocalStorage<VisionNote[]>("self.visionNotes", []);
-  const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
-    "self.transactions",
-    [],
-  );
-  const [subscriptions, setSubscriptions] = useLocalStorage<Subscription[]>(
-    "self.subscriptions",
-    [],
-  );
-  const [contacts, setContacts] = useLocalStorage<Contact[]>("self.contacts", []);
-  const [wheelEntries, setWheelEntries] = useLocalStorage<WheelEntry[]>(
-    "self.wheelEntries",
-    [],
-  );
-  const [subtasks, setSubtasks] = useLocalStorage<Subtask[]>("self.subtasks", []);
-  const [focusSessions, setFocusSessions] = useLocalStorage<FocusSession[]>(
-    "self.focusSessions",
-    [],
-  );
-  const [interruptions, setInterruptions] = useLocalStorage<Interruption[]>(
-    "self.interruptions",
-    [],
-  );
-  const [sleepEntries, setSleepEntries] = useLocalStorage<SleepEntry[]>(
-    "self.sleepEntries",
-    [],
-  );
-  const [shutdownItems, setShutdownItems] = useLocalStorage<ShutdownItem[]>(
-    "self.shutdownItems",
-    [],
-  );
-  const [shutdownLogs, setShutdownLogs] = useLocalStorage<ShutdownLog[]>(
-    "self.shutdownLogs",
-    [],
-  );
-  const [timeBlocks, setTimeBlocks] = useLocalStorage<TimeBlock[]>("self.timeBlocks", []);
+  const [tasks, setTasks] = useSyncedCollection<Task>("tasks");
+  const [habits, setHabits] = useSyncedCollection<Habit>("habits");
+  const [notes, setNotes] = useSyncedCollection<Note>("notes");
+  const [goals, setGoals] = useSyncedCollection<Goal>("goals");
+  const [identities, setIdentities] = useSyncedCollection<Identity>("identities");
+  const [visionNotes, setVisionNotes] = useSyncedCollection<VisionNote>("visionNotes");
+  const [transactions, setTransactions] = useSyncedCollection<Transaction>("transactions");
+  const [subscriptions, setSubscriptions] = useSyncedCollection<Subscription>("subscriptions");
+  const [contacts, setContacts] = useSyncedCollection<Contact>("contacts");
+  const [wheelEntries, setWheelEntries] = useSyncedCollection<WheelEntry>("wheelEntries");
+  const [subtasks, setSubtasks] = useSyncedCollection<Subtask>("subtasks");
+  const [focusSessions, setFocusSessions] = useSyncedCollection<FocusSession>("focusSessions");
+  const [interruptions, setInterruptions] = useSyncedCollection<Interruption>("interruptions");
+  const [sleepEntries, setSleepEntries] = useSyncedCollection<SleepEntry>("sleepEntries");
+  const [shutdownItems, setShutdownItems] = useSyncedCollection<ShutdownItem>("shutdownItems");
+  const [shutdownLogs, setShutdownLogs] = useSyncedCollection<ShutdownLog>("shutdownLogs");
+  const [timeBlocks, setTimeBlocks] = useSyncedCollection<TimeBlock>("timeBlocks");
   const todoist = useTodoist();
+  const session = useSession();
 
   return (
     <div className="flex min-h-screen bg-neutral-50">
-      <Sidebar active={page} onNavigate={setPage} />
+      <Sidebar
+        active={page}
+        onNavigate={setPage}
+        userEmail={session?.user.email}
+        onSignOut={() => supabase.auth.signOut()}
+      />
 
       <div className="flex-1 flex flex-col">
         <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-5 md:px-10">
@@ -310,6 +294,8 @@ export default function App() {
                 setMobileMenuOpen(false);
               }}
               variant="mobile-overlay"
+              userEmail={session?.user.email}
+              onSignOut={() => supabase.auth.signOut()}
             />
             <button
               onClick={() => setMobileMenuOpen(false)}

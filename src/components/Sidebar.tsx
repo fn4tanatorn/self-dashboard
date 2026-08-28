@@ -79,10 +79,14 @@ export function Sidebar({
   active,
   onNavigate,
   variant = "desktop",
+  userEmail,
+  onSignOut,
 }: {
   active: PageKey;
   onNavigate: (page: PageKey) => void;
   variant?: "desktop" | "mobile-overlay";
+  userEmail?: string | null;
+  onSignOut?: () => void;
 }) {
   const rootClass =
     variant === "desktop"
@@ -127,7 +131,20 @@ export function Sidebar({
       </nav>
 
       <div className="mt-4 rounded-lg bg-neutral-50 px-3 py-3 text-xs text-neutral-400">
-        Data is stored locally in this browser.
+        {userEmail ? (
+          <div className="flex items-center justify-between gap-2">
+            <span className="truncate" title={userEmail}>
+              {userEmail}
+            </span>
+            {onSignOut && (
+              <button onClick={onSignOut} className="shrink-0 font-medium text-neutral-500 hover:text-red-500">
+                Sign out
+              </button>
+            )}
+          </div>
+        ) : (
+          "Synced to your account."
+        )}
       </div>
     </aside>
   );
