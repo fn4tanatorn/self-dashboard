@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card } from "../components/Card";
 import { FocusTimer } from "../components/FocusTimer";
 import { InterruptionLog } from "../components/InterruptionLog";
+import { NotificationSettings } from "../components/NotificationSettings";
 import { TaskDecomposition } from "../components/TaskDecomposition";
 import { TaskPicker } from "../components/TaskPicker";
 import { useFocusTimer } from "../hooks/useFocusTimer";
@@ -45,6 +46,8 @@ export function Focus({
 
   return (
     <div className="flex flex-col gap-6">
+      <NotificationSettings />
+
       <Card>
         <FocusTimer
           timer={timer}

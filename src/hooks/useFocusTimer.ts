@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ULTRADIAN_BREAK_SEC,
   ULTRADIAN_FOCUS_SEC,
@@ -8,6 +8,7 @@ import {
   POMODORO_SHORT_BREAK_SEC,
   flowtimeBreakSec,
 } from "../lib/focus";
+import { cancelNotification, notificationPermission, scheduleNotification } from "../lib/push";
 import type { FocusSession, TimerMode } from "../types";
 
 export type FocusPhase = "idle" | "focus" | "break";
@@ -38,6 +39,7 @@ export function useFocusTimer(
   const [activeTaskKey, setActiveTaskKey] = useState<string | null>(null);
   const [activeTaskLabel, setActiveTaskLabel] = useState("");
   const [phaseStartedAt, setPhaseStartedAt] = useState<number | null>(null);
+  const pendingNotificationRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!running) return;
@@ -46,6 +48,7 @@ export function useFocusTimer(
   }, [running]);
 
   function completeFocus(durationSec: number) {
+    pendingNotificationRef.current = null;
     onSessionComplete({
       taskKey: activeTaskKey,
       taskLabel: activeTaskLabel,
@@ -95,6 +98,14 @@ export function useFocusTimer(
     setElapsed(0);
     setPhaseStartedAt(Date.now());
     setRunning(true);
+
+    const target = focusTargetFor(mode);
+    if (target !== null && notificationPermission() === "granted") {
+      const fireAt = new Date(Date.now() + target * 1000);
+      scheduleNotification(fireAt, "Focus session complete", label || "Time's up").then((id) => {
+        pendingNotificationRef.current = id;
+      });
+    }
   }
 
   function pause() {
@@ -106,6 +117,8 @@ export function useFocusTimer(
   }
 
   function cancel() {
+    cancelNotification(pendingNotificationRef.current);
+    pendingNotificationRef.current = null;
     if (phase === "focus") {
       onSessionComplete({
         taskKey: activeTaskKey,
@@ -125,6 +138,8 @@ export function useFocusTimer(
 
   function stopFocus() {
     if (phase !== "focus") return;
+    cancelNotification(pendingNotificationRef.current);
+    pendingNotificationRef.current = null;
     completeFocus(elapsed);
   }
 
