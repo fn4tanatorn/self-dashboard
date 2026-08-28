@@ -82,14 +82,12 @@ export function FocusTimer({
               {running ? <Pause size={15} /> : <Play size={15} />}
               {running ? "Pause" : "Resume"}
             </button>
-            {isCountUp && (
-              <button
-                onClick={stopFocus}
-                className="flex items-center gap-2 rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-neutral-700"
-              >
-                <Square size={14} /> Stop & log
-              </button>
-            )}
+            <button
+              onClick={stopFocus}
+              className="flex items-center gap-2 rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-neutral-700"
+            >
+              <Square size={14} /> {isCountUp ? "Stop & log" : "Finish early"}
+            </button>
             <button
               onClick={cancel}
               className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-neutral-400 hover:text-red-500"
