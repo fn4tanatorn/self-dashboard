@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { useTodoist } from "../hooks/useTodoist";
+import type { CalendarEvent } from "../lib/googleCalendar";
 import { todayKey } from "../lib/date";
 import type { Task, TimeBlock } from "../types";
 import { TaskPicker } from "./TaskPicker";
@@ -28,13 +29,18 @@ export function TimeBlockSchedule({
   setBlocks,
   tasks,
   todoist,
+  date,
+  setDate,
+  calendarEvents = [],
 }: {
   blocks: TimeBlock[];
   setBlocks: (updater: (prev: TimeBlock[]) => TimeBlock[]) => void;
   tasks: Task[];
   todoist: ReturnType<typeof useTodoist>;
+  date: string;
+  setDate: (updater: (prev: string) => string) => void;
+  calendarEvents?: CalendarEvent[];
 }) {
-  const [date, setDate] = useState(todayKey());
   const [title, setTitle] = useState("");
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("10:00");
@@ -81,7 +87,7 @@ export function TimeBlockSchedule({
             <ChevronLeft size={15} />
           </button>
           <button
-            onClick={() => setDate(todayKey())}
+            onClick={() => setDate(() => todayKey())}
             className="rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-50"
           >
             Today
@@ -173,7 +179,7 @@ export function TimeBlockSchedule({
               <div
                 key={block.id}
                 style={{ top, height, backgroundColor: `${color}1a`, borderColor: color }}
-                className="group absolute left-1 right-1 overflow-hidden rounded-md border px-2 py-1"
+                className="group absolute left-1 w-[47%] overflow-hidden rounded-md border px-2 py-1"
               >
                 <div className="flex items-start justify-between gap-1">
                   <p className="truncate text-xs font-medium" style={{ color }}>
@@ -192,6 +198,29 @@ export function TimeBlockSchedule({
               </div>
             );
           })}
+          {calendarEvents
+            .filter((e) => !e.allDay)
+            .map((event) => {
+              const start = toMinutes(event.startTime);
+              const end = toMinutes(event.endTime);
+              const top = ((start - DAY_START_MIN) / SLOT_MIN) * ROW_HEIGHT;
+              const height = Math.max(
+                ROW_HEIGHT * 0.6,
+                ((end - start) / SLOT_MIN) * ROW_HEIGHT,
+              );
+              return (
+                <div
+                  key={event.id}
+                  style={{ top, height }}
+                  className="absolute right-1 w-[47%] overflow-hidden rounded-md border border-dashed border-blue-300 bg-blue-50/60 px-2 py-1"
+                >
+                  <p className="truncate text-xs font-medium text-blue-700">{event.title}</p>
+                  <p className="truncate text-[10px] text-blue-400">
+                    {event.startTime}–{event.endTime}
+                  </p>
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>
