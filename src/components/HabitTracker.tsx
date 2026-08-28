@@ -1,9 +1,16 @@
 import { Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { dayLabel, lastNDays, todayKey } from "../lib/date";
-import type { Habit } from "../types";
+import type { Habit, Routine } from "../types";
 
 const COLORS = ["#171717", "#2563eb", "#059669", "#d97706", "#db2777", "#7c3aed"];
+
+const ROUTINE_GROUPS: { key: Routine | "anytime"; label: string }[] = [
+  { key: "morning", label: "Morning" },
+  { key: "afternoon", label: "Afternoon" },
+  { key: "evening", label: "Evening" },
+  { key: "anytime", label: "Anytime" },
+];
 
 export function HabitTracker({
   habits,
@@ -15,6 +22,7 @@ export function HabitTracker({
   days?: number;
 }) {
   const [draft, setDraft] = useState("");
+  const [routine, setRoutine] = useState<Routine | "anytime">("anytime");
   const dateRange = lastNDays(days);
 
   function addHabit() {
@@ -23,7 +31,14 @@ export function HabitTracker({
     const color = COLORS[habits.length % COLORS.length];
     setHabits((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), name, color, log: {}, createdAt: Date.now() },
+      {
+        id: crypto.randomUUID(),
+        name,
+        color,
+        log: {},
+        createdAt: Date.now(),
+        routine: routine === "anytime" ? undefined : routine,
+      },
     ]);
     setDraft("");
   }
@@ -52,6 +67,16 @@ export function HabitTracker({
           placeholder="Add a habit to track…"
           className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400"
         />
+        <select
+          value={routine}
+          onChange={(e) => setRoutine(e.target.value as Routine | "anytime")}
+          className="rounded-lg border border-neutral-200 bg-white px-2 py-2 text-xs text-neutral-500"
+        >
+          <option value="anytime">Anytime</option>
+          <option value="morning">Morning</option>
+          <option value="afternoon">Afternoon</option>
+          <option value="evening">Evening</option>
+        </select>
         <button
           onClick={addHabit}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700"
@@ -82,42 +107,58 @@ export function HabitTracker({
               </tr>
             </thead>
             <tbody>
-              {habits.map((habit) => (
-                <tr key={habit.id} className="group">
-                  <td className="py-1 pr-3 font-medium text-neutral-700">
-                    <span
-                      className="mr-2 inline-block h-2 w-2 rounded-full align-middle"
-                      style={{ backgroundColor: habit.color }}
-                    />
-                    {habit.name}
-                  </td>
-                  {dateRange.map((d) => {
-                    const key = todayKey(d);
-                    const done = !!habit.log[key];
-                    return (
-                      <td key={key} className="text-center">
-                        <button
-                          onClick={() => toggleDay(habit.id, key)}
-                          className="mx-auto flex h-6 w-6 items-center justify-center rounded-md border border-neutral-200 transition-colors"
-                          style={
-                            done
-                              ? { backgroundColor: habit.color, borderColor: habit.color }
-                              : undefined
-                          }
-                        />
+              {ROUTINE_GROUPS.map((group) => {
+                const groupHabits = habits.filter((h) => (h.routine ?? "anytime") === group.key);
+                if (groupHabits.length === 0) return null;
+                return (
+                  <Fragment key={group.key}>
+                    <tr>
+                      <td
+                        colSpan={dateRange.length + 2}
+                        className="pt-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400"
+                      >
+                        {group.label}
                       </td>
-                    );
-                  })}
-                  <td>
-                    <button
-                      onClick={() => removeHabit(habit.id)}
-                      className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    </tr>
+                    {groupHabits.map((habit) => (
+                      <tr key={habit.id} className="group">
+                        <td className="py-1 pr-3 font-medium text-neutral-700">
+                          <span
+                            className="mr-2 inline-block h-2 w-2 rounded-full align-middle"
+                            style={{ backgroundColor: habit.color }}
+                          />
+                          {habit.name}
+                        </td>
+                        {dateRange.map((d) => {
+                          const key = todayKey(d);
+                          const done = !!habit.log[key];
+                          return (
+                            <td key={key} className="text-center">
+                              <button
+                                onClick={() => toggleDay(habit.id, key)}
+                                className="mx-auto flex h-6 w-6 items-center justify-center rounded-md border border-neutral-200 transition-colors"
+                                style={
+                                  done
+                                    ? { backgroundColor: habit.color, borderColor: habit.color }
+                                    : undefined
+                                }
+                              />
+                            </td>
+                          );
+                        })}
+                        <td>
+                          <button
+                            onClick={() => removeHabit(habit.id)}
+                            className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>

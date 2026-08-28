@@ -11,12 +11,15 @@ export interface Task {
   important?: boolean;
 }
 
+export type Routine = "morning" | "afternoon" | "evening";
+
 export interface Habit {
   id: string;
   name: string;
   color: string;
   log: Record<string, boolean>; // date (YYYY-MM-DD) -> done
   createdAt: number;
+  routine?: Routine;
 }
 
 export type NoteType = "note" | "book" | "article" | "idea";

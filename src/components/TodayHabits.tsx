@@ -1,5 +1,12 @@
 import { todayKey } from "../lib/date";
-import type { Habit } from "../types";
+import type { Habit, Routine } from "../types";
+
+const ROUTINE_GROUPS: { key: Routine | "anytime"; label: string }[] = [
+  { key: "morning", label: "Morning" },
+  { key: "afternoon", label: "Afternoon" },
+  { key: "evening", label: "Evening" },
+  { key: "anytime", label: "Anytime" },
+];
 
 export function TodayHabits({
   habits,
@@ -27,27 +34,42 @@ export function TodayHabits({
   }
 
   return (
-    <div className="flex flex-col divide-y divide-neutral-100">
-      {habits.map((habit) => {
-        const done = !!habit.log[key];
+    <div className="flex flex-col">
+      {ROUTINE_GROUPS.map((group) => {
+        const groupHabits = habits.filter((h) => (h.routine ?? "anytime") === group.key);
+        if (groupHabits.length === 0) return null;
         return (
-          <button
-            key={habit.id}
-            onClick={() => toggle(habit.id)}
-            className="flex items-center gap-3 py-2.5 text-left"
-          >
-            <span
-              className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors"
-              style={
-                done
-                  ? { backgroundColor: habit.color, borderColor: habit.color }
-                  : { borderColor: "#d4d4d4" }
-              }
-            />
-            <span className={`text-sm ${done ? "text-neutral-400 line-through" : "text-neutral-800"}`}>
-              {habit.name}
-            </span>
-          </button>
+          <div key={group.key} className="flex flex-col">
+            <p className="pt-3 text-[11px] font-semibold uppercase tracking-wide text-neutral-400 first:pt-0">
+              {group.label}
+            </p>
+            <div className="flex flex-col divide-y divide-neutral-100">
+              {groupHabits.map((habit) => {
+                const done = !!habit.log[key];
+                return (
+                  <button
+                    key={habit.id}
+                    onClick={() => toggle(habit.id)}
+                    className="flex items-center gap-3 py-2.5 text-left"
+                  >
+                    <span
+                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors"
+                      style={
+                        done
+                          ? { backgroundColor: habit.color, borderColor: habit.color }
+                          : { borderColor: "#d4d4d4" }
+                      }
+                    />
+                    <span
+                      className={`text-sm ${done ? "text-neutral-400 line-through" : "text-neutral-800"}`}
+                    >
+                      {habit.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         );
       })}
     </div>

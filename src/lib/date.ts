@@ -52,6 +52,25 @@ export function daysSince(dateStr: string | null): number | null {
   return -daysUntil(dateStr);
 }
 
+export function quarterKey(d: Date = new Date()): string {
+  const y = d.getFullYear();
+  const q = Math.floor(d.getMonth() / 3) + 1;
+  return `${y}-Q${q}`;
+}
+
+export function yearKey(d: Date = new Date()): string {
+  return String(d.getFullYear());
+}
+
+export function startOfWeek(d: Date = new Date()): Date {
+  const day = d.getDay(); // 0 = Sunday
+  const diff = (day + 6) % 7; // days since Monday
+  const monday = new Date(d);
+  monday.setHours(0, 0, 0, 0);
+  monday.setDate(d.getDate() - diff);
+  return monday;
+}
+
 export function daysUntilNextBirthday(mmdd: string): number {
   const [m, d] = mmdd.split("-").map(Number);
   const today = new Date();
