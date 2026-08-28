@@ -1,8 +1,12 @@
 import type { Session } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/push";
 
-export function useSession(): Session | null {
+export const SessionContext = createContext<Session | null>(null);
+
+/** Subscribes directly to Supabase auth state. Only AuthGate should use this —
+ * everything else should read the already-validated session via useSession(). */
+export function useRawSession(): Session | null {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
@@ -14,4 +18,9 @@ export function useSession(): Session | null {
   }, []);
 
   return session;
+}
+
+/** Reads the session AuthGate already validated (real, non-anonymous, signed in). */
+export function useSession(): Session | null {
+  return useContext(SessionContext);
 }

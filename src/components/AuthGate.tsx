@@ -1,11 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { SyncedDataContext } from "../hooks/useSyncedCollection";
-import { useSession } from "../hooks/useSession";
+import { SessionContext, useRawSession } from "../hooks/useSession";
 import { supabase } from "../lib/push";
 import { bulkSeed, fetchAllUserData, readLocalStorageSeed } from "../lib/sync";
 
 export function AuthGate({ children }: { children: ReactNode }) {
-  const rawSession = useSession();
+  const rawSession = useRawSession();
   // Anonymous sessions (used for push-notification subscriptions) are per-browser and
   // must not be treated as "signed in" for sync — otherwise a device's data silently
   // lands under an identity no other device can ever log into.
@@ -131,5 +131,9 @@ export function AuthGate({ children }: { children: ReactNode }) {
     );
   }
 
-  return <SyncedDataContext.Provider value={data}>{children}</SyncedDataContext.Provider>;
+  return (
+    <SessionContext.Provider value={session}>
+      <SyncedDataContext.Provider value={data}>{children}</SyncedDataContext.Provider>
+    </SessionContext.Provider>
+  );
 }
