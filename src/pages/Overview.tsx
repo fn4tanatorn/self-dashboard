@@ -1,4 +1,4 @@
-import { CheckCircle2, Flame, ListTodo, Target, Timer, Trophy } from "lucide-react";
+import { BedDouble, CheckCircle2, Flame, ListTodo, Target, Timer, Trophy } from "lucide-react";
 import { Card } from "../components/Card";
 import { StatCard } from "../components/StatCard";
 import { TaskList } from "../components/TaskList";
@@ -6,7 +6,7 @@ import { TodayHabits } from "../components/TodayHabits";
 import { TodoistTaskList } from "../components/TodoistTaskList";
 import type { useTodoist } from "../hooks/useTodoist";
 import { todayKey } from "../lib/date";
-import type { FocusSession, Goal, Habit, Note, Task } from "../types";
+import type { FocusSession, Goal, Habit, Note, SleepEntry, Task } from "../types";
 
 export function Overview({
   tasks,
@@ -17,6 +17,7 @@ export function Overview({
   notes,
   todoist,
   focusSessions,
+  sleepEntries,
 }: {
   tasks: Task[];
   setTasks: (updater: (prev: Task[]) => Task[]) => void;
@@ -26,9 +27,11 @@ export function Overview({
   notes: Note[];
   todoist: ReturnType<typeof useTodoist>;
   focusSessions: FocusSession[];
+  sleepEntries: SleepEntry[];
 }) {
   const key = todayKey();
   const habitsDoneToday = habits.filter((h) => h.log[key]).length;
+  const lastNightSleep = sleepEntries.find((s) => s.date === key)?.hours;
 
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
@@ -55,7 +58,7 @@ export function Overview({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-6">
         <StatCard label="Open tasks" value={openTaskCount} icon={ListTodo} />
         <StatCard label="Completed today" value={completedToday} icon={CheckCircle2} />
         <StatCard
@@ -64,6 +67,12 @@ export function Overview({
           icon={Flame}
         />
         <StatCard label="Pomodoros today" value={pomodorosToday} icon={Timer} />
+        <StatCard
+          label="Sleep last night"
+          value={lastNightSleep !== undefined ? `${lastNightSleep}h` : "—"}
+          icon={BedDouble}
+          hint="Target 8h"
+        />
         {todoist.connected && todoist.stats && todoist.stats.dailyGoal > 0 ? (
           <StatCard
             label="Daily goal"

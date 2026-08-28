@@ -1,8 +1,10 @@
 import {
+  CalendarClock,
   CheckSquare,
   Compass,
   LayoutGrid,
   ListTodo,
+  Moon,
   NotebookPen,
   RotateCcw,
   Timer,
@@ -15,7 +17,9 @@ export type PageKey =
   | "overview"
   | "tasks"
   | "habits"
+  | "schedule"
   | "focus"
+  | "shutdown"
   | "vision"
   | "finances"
   | "people"
@@ -29,7 +33,9 @@ const GROUPS: { heading: string; items: { key: PageKey; label: string; icon: Luc
       { key: "overview", label: "Overview", icon: LayoutGrid },
       { key: "tasks", label: "Tasks", icon: ListTodo },
       { key: "habits", label: "Habits", icon: CheckSquare },
+      { key: "schedule", label: "Schedule", icon: CalendarClock },
       { key: "focus", label: "Focus", icon: Timer },
+      { key: "shutdown", label: "Shutdown", icon: Moon },
     ],
   },
   {

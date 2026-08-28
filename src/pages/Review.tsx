@@ -1,7 +1,18 @@
 import { Card } from "../components/Card";
 import { WheelOfLife } from "../components/WheelOfLife";
 import { daysSince, daysUntil, lastNDays, monthKey, todayKey } from "../lib/date";
-import type { Contact, Goal, Habit, Subscription, Transaction, WheelEntry } from "../types";
+import type {
+  Contact,
+  FocusSession,
+  Goal,
+  Habit,
+  SleepEntry,
+  Subscription,
+  Transaction,
+  WheelEntry,
+} from "../types";
+
+const EIGHT_HOURS_SEC = 8 * 60 * 60;
 
 function habitCompletion(habit: Habit): number {
   const days = lastNDays(30).map((d) => todayKey(d));
@@ -17,6 +28,8 @@ export function Review({
   contacts,
   wheelEntries,
   setWheelEntries,
+  sleepEntries,
+  focusSessions,
 }: {
   goals: Goal[];
   habits: Habit[];
@@ -25,7 +38,16 @@ export function Review({
   contacts: Contact[];
   wheelEntries: WheelEntry[];
   setWheelEntries: (updater: (prev: WheelEntry[]) => WheelEntry[]) => void;
+  sleepEntries: SleepEntry[];
+  focusSessions: FocusSession[];
 }) {
+  const today = todayKey();
+  const sleepHours = sleepEntries.find((s) => s.date === today)?.hours ?? 0;
+  const workSec = focusSessions
+    .filter((s) => !s.voided && todayKey(new Date(s.completedAt)) === today)
+    .reduce((sum, s) => sum + s.durationSec, 0);
+  const workHours = workSec / 3600;
+
   const thisMonth = monthKey();
   const monthTx = transactions.filter((t) => t.date.startsWith(thisMonth));
   const net =
@@ -50,6 +72,35 @@ export function Review({
     <div className="flex flex-col gap-6">
       <Card title="Wheel of life">
         <WheelOfLife entries={wheelEntries} setEntries={setWheelEntries} />
+      </Card>
+
+      <Card title="8-8-8 today">
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex-1">
+            <div className="mb-1 flex items-center justify-between text-xs">
+              <span className="text-neutral-700">Sleep</span>
+              <span className="text-neutral-400">{sleepHours}h / 8h</span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100">
+              <div
+                className="h-full rounded-full bg-neutral-900"
+                style={{ width: `${Math.min(100, (sleepHours / 8) * 100)}%` }}
+              />
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="mb-1 flex items-center justify-between text-xs">
+              <span className="text-neutral-700">Work (Focus sessions)</span>
+              <span className="text-neutral-400">{workHours.toFixed(1)}h / 8h</span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100">
+              <div
+                className="h-full rounded-full bg-neutral-900"
+                style={{ width: `${Math.min(100, (workSec / EIGHT_HOURS_SEC) * 100)}%` }}
+              />
+            </div>
+          </div>
+        </div>
       </Card>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

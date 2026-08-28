@@ -7,6 +7,8 @@ export interface Task {
   priority: Priority;
   dueDate: string | null;
   createdAt: number;
+  urgent?: boolean;
+  important?: boolean;
 }
 
 export interface Habit {
@@ -135,5 +137,36 @@ export interface Subtask {
   taskKey: string;
   title: string;
   done: boolean;
+  createdAt: number;
+}
+
+export interface SleepEntry {
+  id: string;
+  date: string; // YYYY-MM-DD, the morning this entry is logged for
+  hours: number;
+  quality?: number; // 1-5
+  createdAt: number;
+}
+
+export interface ShutdownItem {
+  id: string;
+  text: string;
+  createdAt: number;
+}
+
+export interface ShutdownLog {
+  id: string;
+  date: string; // YYYY-MM-DD
+  completedItemIds: string[];
+  completedAt: number;
+}
+
+export interface TimeBlock {
+  id: string;
+  date: string; // YYYY-MM-DD
+  startTime: string; // HH:MM
+  endTime: string; // HH:MM
+  title: string;
+  taskKey: string | null;
   createdAt: number;
 }

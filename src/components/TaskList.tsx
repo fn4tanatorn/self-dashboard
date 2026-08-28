@@ -55,6 +55,12 @@ export function TaskList({
     setTasks((prev) => prev.filter((t) => t.id !== id));
   }
 
+  function toggleFlag(id: string, flag: "urgent" | "important") {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, [flag]: !t[flag] } : t)),
+    );
+  }
+
   function toggleExpanded(id: string) {
     setExpanded((prev) => {
       const next = new Set(prev);
@@ -157,6 +163,24 @@ export function TaskList({
                 >
                   {task.priority}
                 </span>
+                <button
+                  onClick={() => toggleFlag(task.id, "urgent")}
+                  title="Urgent"
+                  className={`rounded-full px-1.5 py-0.5 text-[11px] font-medium ${
+                    task.urgent ? "bg-red-100 text-red-600" : "bg-neutral-50 text-neutral-300"
+                  }`}
+                >
+                  U
+                </button>
+                <button
+                  onClick={() => toggleFlag(task.id, "important")}
+                  title="Important"
+                  className={`rounded-full px-1.5 py-0.5 text-[11px] font-medium ${
+                    task.important ? "bg-blue-100 text-blue-600" : "bg-neutral-50 text-neutral-300"
+                  }`}
+                >
+                  I
+                </button>
                 <button
                   onClick={() => removeTask(task.id)}
                   className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500"
