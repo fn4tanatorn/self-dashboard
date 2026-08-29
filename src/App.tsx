@@ -221,6 +221,8 @@ export default function App() {
               setItems={setShutdownItems}
               logs={shutdownLogs}
               setLogs={setShutdownLogs}
+              tasks={tasks}
+              setTasks={setTasks}
             />
           )}
           {page === "vision" && (
