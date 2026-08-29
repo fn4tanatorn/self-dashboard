@@ -9,6 +9,7 @@ import { SleepLog } from "./components/SleepLog";
 import { TaskList } from "./components/TaskList";
 import { TodoistConnect } from "./components/TodoistConnect";
 import { TodoistTaskList } from "./components/TodoistTaskList";
+import { useFocusTimer } from "./hooks/useFocusTimer";
 import { useSession } from "./hooks/useSession";
 import { useSyncedCollection } from "./hooks/useSyncedCollection";
 import { useTodoist } from "./hooks/useTodoist";
@@ -93,6 +94,9 @@ export default function App() {
   const [timeBlocks, setTimeBlocks] = useSyncedCollection<TimeBlock>("timeBlocks");
   const todoist = useTodoist();
   const session = useSession();
+  const focusTimer = useFocusTimer((completedSession) =>
+    setFocusSessions((prev) => [{ id: crypto.randomUUID(), ...completedSession }, ...prev]),
+  );
 
   return (
     <div className="flex min-h-screen bg-neutral-50">
@@ -206,7 +210,7 @@ export default function App() {
               subtasks={subtasks}
               setSubtasks={setSubtasks}
               focusSessions={focusSessions}
-              setFocusSessions={setFocusSessions}
+              timer={focusTimer}
               interruptions={interruptions}
               setInterruptions={setInterruptions}
             />

@@ -40,12 +40,28 @@ export function useFocusTimer(
   const [activeTaskLabel, setActiveTaskLabel] = useState("");
   const [phaseStartedAt, setPhaseStartedAt] = useState<number | null>(null);
   const pendingNotificationRef = useRef<string | null>(null);
+  const pausedMsRef = useRef(0);
+  const pausedAtRef = useRef<number | null>(null);
 
+  // Derives elapsed from wall-clock time rather than counting ticks, so a
+  // throttled/backgrounded tab (Chrome slows setInterval when hidden) still
+  // shows the correct elapsed time as soon as a tick — or a visibility
+  // change — fires, instead of drifting behind real time.
   useEffect(() => {
-    if (!running) return;
-    const id = setInterval(() => setElapsed((e) => e + 1), 1000);
-    return () => clearInterval(id);
-  }, [running]);
+    if (!running || phaseStartedAt === null) return;
+    function sync() {
+      const now = Date.now();
+      const pausedMs = pausedAtRef.current !== null ? now - pausedAtRef.current : 0;
+      setElapsed(Math.max(0, Math.floor((now - phaseStartedAt! - pausedMsRef.current - pausedMs) / 1000)));
+    }
+    sync();
+    const id = setInterval(sync, 1000);
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, [running, phaseStartedAt]);
 
   function completeFocus(durationSec: number) {
     pendingNotificationRef.current = null;
@@ -63,6 +79,8 @@ export function useFocusTimer(
     setCycle(nextCycle);
     setPhase("break");
     setElapsed(0);
+    pausedMsRef.current = 0;
+    pausedAtRef.current = null;
     setPhaseStartedAt(Date.now());
     setRunning(true);
   }
@@ -96,6 +114,8 @@ export function useFocusTimer(
     setActiveTaskLabel(label);
     setPhase("focus");
     setElapsed(0);
+    pausedMsRef.current = 0;
+    pausedAtRef.current = null;
     setPhaseStartedAt(Date.now());
     setRunning(true);
 
@@ -109,10 +129,15 @@ export function useFocusTimer(
   }
 
   function pause() {
+    pausedAtRef.current = Date.now();
     setRunning(false);
   }
 
   function resume() {
+    if (pausedAtRef.current !== null) {
+      pausedMsRef.current += Date.now() - pausedAtRef.current;
+      pausedAtRef.current = null;
+    }
     setRunning(true);
   }
 
@@ -132,6 +157,8 @@ export function useFocusTimer(
     }
     setPhase("idle");
     setElapsed(0);
+    pausedMsRef.current = 0;
+    pausedAtRef.current = null;
     setRunning(false);
     setPhaseStartedAt(null);
   }

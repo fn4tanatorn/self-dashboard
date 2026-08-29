@@ -5,7 +5,7 @@ import { InterruptionLog } from "../components/InterruptionLog";
 import { NotificationSettings } from "../components/NotificationSettings";
 import { TaskDecomposition } from "../components/TaskDecomposition";
 import { TaskPicker } from "../components/TaskPicker";
-import { useFocusTimer } from "../hooks/useFocusTimer";
+import type { useFocusTimer } from "../hooks/useFocusTimer";
 import type { useTodoist } from "../hooks/useTodoist";
 import { formatClock } from "../lib/focus";
 import type { FocusSession, Interruption, Subtask, Task } from "../types";
@@ -16,7 +16,7 @@ export function Focus({
   subtasks,
   setSubtasks,
   focusSessions,
-  setFocusSessions,
+  timer,
   interruptions,
   setInterruptions,
 }: {
@@ -25,18 +25,12 @@ export function Focus({
   subtasks: Subtask[];
   setSubtasks: (updater: (prev: Subtask[]) => Subtask[]) => void;
   focusSessions: FocusSession[];
-  setFocusSessions: (updater: (prev: FocusSession[]) => FocusSession[]) => void;
+  timer: ReturnType<typeof useFocusTimer>;
   interruptions: Interruption[];
   setInterruptions: (updater: (prev: Interruption[]) => Interruption[]) => void;
 }) {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [selectedLabel, setSelectedLabel] = useState("");
-
-  function onSessionComplete(session: Omit<FocusSession, "id">) {
-    setFocusSessions((prev) => [{ id: crypto.randomUUID(), ...session }, ...prev]);
-  }
-
-  const timer = useFocusTimer(onSessionComplete);
 
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
