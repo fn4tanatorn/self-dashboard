@@ -27,6 +27,51 @@ function breakTargetFor(mode: TimerMode, cycle: number, lastFocusDurationSec: nu
     : POMODORO_SHORT_BREAK_SEC;
 }
 
+// Push notifications go through a server round-trip (cron every 60s → edge
+// function → web-push → service worker) that can lag or silently fail if the
+// subscription is stale. A chime + local notification fires instantly from
+// the tab itself, so the alert doesn't depend on that chain at all.
+function playChime() {
+  try {
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.6);
+    osc.onended = () => ctx.close();
+  } catch {
+    // Web Audio unavailable — nothing to fall back to here, push notification still covers it
+  }
+}
+
+async function notifyLocally(title: string, body: string) {
+  playChime();
+  if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+  try {
+    if ("serviceWorker" in navigator) {
+      const registration = await navigator.serviceWorker.ready;
+      await registration.showNotification(title, {
+        body,
+        icon: "/self-dashboard/icon-192.png",
+        badge: "/self-dashboard/icon-192.png",
+        tag: "focus-timer",
+      });
+    } else {
+      new Notification(title, { body });
+    }
+  } catch {
+    // best-effort — the chime above is the primary, reliable signal
+  }
+}
+
 export function useFocusTimer(
   onSessionComplete: (session: Omit<FocusSession, "id">) => void,
 ) {
@@ -65,6 +110,7 @@ export function useFocusTimer(
 
   function completeFocus(durationSec: number) {
     pendingNotificationRef.current = null;
+    notifyLocally("Focus session complete", activeTaskLabel || "Time's up");
     onSessionComplete({
       taskKey: activeTaskKey,
       taskLabel: activeTaskLabel,
@@ -86,6 +132,7 @@ export function useFocusTimer(
   }
 
   function finishBreak() {
+    notifyLocally("Break's over", "Back to focus when you're ready");
     setPhase("idle");
     setElapsed(0);
     setRunning(false);
