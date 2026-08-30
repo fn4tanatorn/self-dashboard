@@ -12,11 +12,13 @@ export function Schedule({
   setBlocks,
   tasks,
   todoist,
+  onStartFocus,
 }: {
   blocks: TimeBlock[];
   setBlocks: (updater: (prev: TimeBlock[]) => TimeBlock[]) => void;
   tasks: Task[];
   todoist: ReturnType<typeof useTodoist>;
+  onStartFocus?: (key: string | null, label: string) => void;
 }) {
   const [date, setDate] = useState(todayKey());
   const gcal = useGoogleCalendar();
@@ -45,6 +47,7 @@ export function Schedule({
           date={date}
           setDate={setDate}
           calendarEvents={gcal.events}
+          onStartFocus={onStartFocus}
         />
       </Card>
     </>
