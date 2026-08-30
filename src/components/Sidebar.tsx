@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { todayKey } from "../lib/date";
+import { supabase } from "../lib/push";
 import { fetchAllUserData } from "../lib/sync";
 
 export type PageKey =
@@ -108,6 +109,11 @@ export function Sidebar({
 }) {
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [settingPassword, setSettingPassword] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   async function handleExport() {
     setExporting(true);
@@ -118,6 +124,20 @@ export function Sidebar({
       setExportError("Export failed — try again.");
     } finally {
       setExporting(false);
+    }
+  }
+
+  async function handleSetPassword() {
+    setSettingPassword(true);
+    setPasswordError(null);
+    setPasswordMessage(null);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    setSettingPassword(false);
+    if (error) {
+      setPasswordError(error.message);
+    } else {
+      setPasswordMessage("Password set — use it to sign in on any device now.");
+      setNewPassword("");
     }
   }
 
@@ -188,6 +208,51 @@ export function Sidebar({
               )}
             </div>
             {exportError && <span className="text-red-500 dark:text-red-400">{exportError}</span>}
+
+            {showPasswordForm ? (
+              <div className="flex flex-col gap-1.5 border-t border-neutral-200 pt-2 dark:border-neutral-700">
+                <input
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && newPassword && handleSetPassword()}
+                  type="password"
+                  autoComplete="new-password"
+                  placeholder="New password"
+                  autoFocus
+                  className="w-full rounded-md border border-neutral-200 bg-white px-2 py-1 text-xs placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
+                />
+                <div className="flex items-center justify-between gap-2">
+                  <button
+                    onClick={handleSetPassword}
+                    disabled={settingPassword || !newPassword}
+                    className="font-medium text-neutral-500 hover:text-neutral-900 disabled:opacity-50 dark:text-neutral-400 dark:hover:text-neutral-50"
+                  >
+                    {settingPassword ? "Saving…" : "Save"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowPasswordForm(false);
+                      setPasswordError(null);
+                      setPasswordMessage(null);
+                    }}
+                    className="text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                {passwordError && <span className="text-red-500 dark:text-red-400">{passwordError}</span>}
+                {passwordMessage && (
+                  <span className="text-emerald-600 dark:text-emerald-400">{passwordMessage}</span>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowPasswordForm(true)}
+                className="text-left font-medium text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50"
+              >
+                Set sign-in password
+              </button>
+            )}
           </div>
         ) : (
           "Synced to your account."

@@ -13,7 +13,10 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const [data, setData] = useState<Record<string, unknown[]> | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
+  const [mode, setMode] = useState<"password" | "email-code">("password");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [signingIn, setSigningIn] = useState(false);
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -46,6 +49,18 @@ export function AuthGate({ children }: { children: ReactNode }) {
       cancelled = true;
     };
   }, [session]);
+
+  async function signInWithPassword() {
+    setSigningIn(true);
+    setAuthError(null);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+    setSigningIn(false);
+    // On success, onAuthStateChange picks up the new session and this whole screen unmounts.
+    if (error) setAuthError(error.message);
+  }
 
   async function sendLink() {
     setSending(true);
@@ -84,7 +99,46 @@ export function AuthGate({ children }: { children: ReactNode }) {
             <span className="text-base font-semibold tracking-tight">Self</span>
           </div>
 
-          {sent ? (
+          {mode === "password" ? (
+            <>
+              <p className="mb-3 text-sm text-neutral-500 dark:text-neutral-400">
+                Sign in with your password — no email round-trip needed.
+              </p>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="you@example.com"
+                autoFocus
+                className="mb-2 w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
+              />
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && email.trim() && password && signInWithPassword()}
+                type="password"
+                autoComplete="current-password"
+                placeholder="Password"
+                className="mb-3 w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
+              />
+              <button
+                onClick={signInWithPassword}
+                disabled={signingIn || !email.trim() || !password}
+                className="mb-3 w-full rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+              >
+                {signingIn ? "Signing in…" : "Sign in"}
+              </button>
+              <button
+                onClick={() => {
+                  setMode("email-code");
+                  setAuthError(null);
+                }}
+                className="w-full text-xs text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+              >
+                No password set yet? Sign in with an email code
+              </button>
+            </>
+          ) : sent ? (
             <>
               <p className="mb-1 text-sm text-neutral-700 dark:text-neutral-300">
                 Check <span className="font-medium">{email}</span> for a 6-digit code.
@@ -124,8 +178,8 @@ export function AuthGate({ children }: { children: ReactNode }) {
           ) : (
             <>
               <p className="mb-3 text-sm text-neutral-500 dark:text-neutral-400">
-                Sign in to sync your dashboard across devices — we'll email you a 6-digit code, no
-                password needed.
+                We'll email you a link — tap it to sign in, then set a password from the sidebar so
+                next time you can skip email entirely.
               </p>
               <input
                 value={email}
@@ -139,9 +193,18 @@ export function AuthGate({ children }: { children: ReactNode }) {
               <button
                 onClick={sendLink}
                 disabled={sending || !email.trim()}
-                className="w-full rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+                className="mb-3 w-full rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
               >
-                {sending ? "Sending…" : "Send code"}
+                {sending ? "Sending…" : "Send link"}
+              </button>
+              <button
+                onClick={() => {
+                  setMode("password");
+                  setAuthError(null);
+                }}
+                className="w-full text-xs text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+              >
+                Have a password? Sign in with it instead
               </button>
             </>
           )}
