@@ -72,8 +72,8 @@ function NavButton({
       onClick={onClick}
       className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
         isActive
-          ? "bg-neutral-900 text-white"
-          : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
+          ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
+          : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
       }`}
     >
       <Icon size={17} strokeWidth={2} />
@@ -123,13 +123,13 @@ export function Sidebar({
 
   const rootClass =
     variant === "desktop"
-      ? "sticky top-0 hidden h-screen w-60 shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white px-4 py-6 md:flex"
-      : "flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-white px-4 py-6";
+      ? "sticky top-0 hidden h-screen w-60 shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white px-4 py-6 dark:border-neutral-800 dark:bg-neutral-900 md:flex"
+      : "flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-white px-4 py-6 dark:bg-neutral-900";
 
   return (
     <aside className={rootClass}>
       <div className="mb-8 flex items-center gap-2 px-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-sm font-bold text-white">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-sm font-bold text-white dark:bg-neutral-100 dark:text-neutral-900">
           S
         </div>
         <span className="text-base font-semibold tracking-tight">Self</span>
@@ -138,7 +138,7 @@ export function Sidebar({
       <nav className="flex flex-1 flex-col gap-5">
         {GROUPS.map((group) => (
           <div key={group.heading} className="flex flex-col gap-1">
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-neutral-400">
+            <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
               {group.heading}
             </p>
             {group.items.map(({ key, label, icon }) => (
@@ -153,7 +153,7 @@ export function Sidebar({
           </div>
         ))}
 
-        <div className="mt-auto flex flex-col gap-1 border-t border-neutral-100 pt-4">
+        <div className="mt-auto flex flex-col gap-1 border-t border-neutral-100 pt-4 dark:border-neutral-800">
           <NavButton
             isActive={active === "review"}
             label="Review"
@@ -163,7 +163,7 @@ export function Sidebar({
         </div>
       </nav>
 
-      <div className="mt-4 rounded-lg bg-neutral-50 px-3 py-3 text-xs text-neutral-400">
+      <div className="mt-4 rounded-lg bg-neutral-50 px-3 py-3 text-xs text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
         {userEmail ? (
           <div className="flex flex-col gap-2">
             <span className="truncate" title={userEmail}>
@@ -173,18 +173,21 @@ export function Sidebar({
               <button
                 onClick={handleExport}
                 disabled={exporting}
-                className="flex shrink-0 items-center gap-1 font-medium text-neutral-500 hover:text-neutral-900 disabled:opacity-50"
+                className="flex shrink-0 items-center gap-1 font-medium text-neutral-500 hover:text-neutral-900 disabled:opacity-50 dark:text-neutral-400 dark:hover:text-neutral-50"
               >
                 <Download size={12} />
                 {exporting ? "Exporting…" : "Export data"}
               </button>
               {onSignOut && (
-                <button onClick={onSignOut} className="shrink-0 font-medium text-neutral-500 hover:text-red-500">
+                <button
+                  onClick={onSignOut}
+                  className="shrink-0 font-medium text-neutral-500 hover:text-red-500 dark:text-neutral-400 dark:hover:text-red-400"
+                >
                   Sign out
                 </button>
               )}
             </div>
-            {exportError && <span className="text-red-500">{exportError}</span>}
+            {exportError && <span className="text-red-500 dark:text-red-400">{exportError}</span>}
           </div>
         ) : (
           "Synced to your account."

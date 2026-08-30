@@ -39,7 +39,7 @@ export function NotificationSettings() {
 
   if (status === "denied") {
     return (
-      <div className="mb-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+      <div className="mb-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300">
         <ShieldAlert size={16} className="mt-0.5 shrink-0" />
         <span>
           การแจ้งเตือนถูกบล็อกไว้ที่เบราว์เซอร์ — เป็นสาเหตุที่ popup ไม่ขึ้น เข้าไปที่ไอคอนกุญแจ/ตัวล็อกข้าง
@@ -52,7 +52,7 @@ export function NotificationSettings() {
 
   if (status === "unsupported") {
     return (
-      <div className="mb-4 flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-500">
+      <div className="mb-4 flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
         <BellOff size={16} />
         Notifications aren't supported in this browser. On iPhone, add this app to your Home
         Screen from Safari first.
@@ -62,7 +62,7 @@ export function NotificationSettings() {
 
   if (status === "on") {
     return (
-      <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-600">
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
         <div className="flex items-center gap-2">
           <BellRing size={16} className="text-emerald-500" />
           Timer notifications are on — you'll get an alert when a focus session ends, even if this
@@ -70,7 +70,7 @@ export function NotificationSettings() {
         </div>
         <button
           onClick={sendTestNotification}
-          className="shrink-0 rounded-lg border border-neutral-200 px-3 py-2 text-xs font-medium text-neutral-500 hover:bg-neutral-50"
+          className="shrink-0 rounded-lg border border-neutral-200 px-3 py-2 text-xs font-medium text-neutral-500 hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
         >
           Send test
         </button>
@@ -79,21 +79,21 @@ export function NotificationSettings() {
   }
 
   return (
-    <div className="mb-4 rounded-xl border border-neutral-200 bg-white p-4">
+    <div className="mb-4 rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-sm text-neutral-700">
+        <div className="flex items-center gap-2 text-sm text-neutral-700 dark:text-neutral-300">
           <Bell size={16} />
           Get notified when a focus session ends, even in the background
         </div>
         <button
           onClick={enable}
           disabled={enabling}
-          className="shrink-0 rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50"
+          className="shrink-0 rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           {enabling ? "Enabling…" : "Enable notifications"}
         </button>
       </div>
-      {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
+      {error && <p className="mt-2 text-xs text-red-500 dark:text-red-400">{error}</p>}
     </div>
   );
 }
