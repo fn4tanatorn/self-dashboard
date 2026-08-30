@@ -63,12 +63,14 @@ export function Goals({
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && addGoal()}
           placeholder="Goal, e.g. Read books"
           className="min-w-[160px] flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <input
           value={target}
           onChange={(e) => setTarget(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && addGoal()}
           placeholder="Target"
           type="number"
           className="w-20 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
@@ -76,12 +78,14 @@ export function Goals({
         <input
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && addGoal()}
           placeholder="Unit"
           className="w-20 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <input
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && addGoal()}
           placeholder="Category"
           className="w-24 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />

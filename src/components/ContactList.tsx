@@ -56,18 +56,21 @@ export function ContactList({
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && add()}
           placeholder="Name"
           className="min-w-[140px] flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <input
           value={relationship}
           onChange={(e) => setRelationship(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && add()}
           placeholder="Relationship"
           className="w-28 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <input
           value={birthday}
           onChange={(e) => setBirthday(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && add()}
           type="date"
           className="rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300"
         />
