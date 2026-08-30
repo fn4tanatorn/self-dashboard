@@ -2,6 +2,7 @@ import {
   CalendarClock,
   CheckSquare,
   Compass,
+  Download,
   LayoutGrid,
   ListTodo,
   MessageCircle,
@@ -13,6 +14,9 @@ import {
   Wallet,
   type LucideIcon,
 } from "lucide-react";
+import { useState } from "react";
+import { todayKey } from "../lib/date";
+import { fetchAllUserData } from "../lib/sync";
 
 export type PageKey =
   | "overview"
@@ -78,6 +82,17 @@ function NavButton({
   );
 }
 
+async function exportUserData() {
+  const grouped = await fetchAllUserData();
+  const blob = new Blob([JSON.stringify(grouped, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `self-dashboard-backup-${todayKey()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export function Sidebar({
   active,
   onNavigate,
@@ -91,6 +106,21 @@ export function Sidebar({
   userEmail?: string | null;
   onSignOut?: () => void;
 }) {
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+
+  async function handleExport() {
+    setExporting(true);
+    setExportError(null);
+    try {
+      await exportUserData();
+    } catch {
+      setExportError("Export failed — try again.");
+    } finally {
+      setExporting(false);
+    }
+  }
+
   const rootClass =
     variant === "desktop"
       ? "sticky top-0 hidden h-screen w-60 shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white px-4 py-6 md:flex"
@@ -135,15 +165,26 @@ export function Sidebar({
 
       <div className="mt-4 rounded-lg bg-neutral-50 px-3 py-3 text-xs text-neutral-400">
         {userEmail ? (
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-col gap-2">
             <span className="truncate" title={userEmail}>
               {userEmail}
             </span>
-            {onSignOut && (
-              <button onClick={onSignOut} className="shrink-0 font-medium text-neutral-500 hover:text-red-500">
-                Sign out
+            <div className="flex items-center justify-between gap-2">
+              <button
+                onClick={handleExport}
+                disabled={exporting}
+                className="flex shrink-0 items-center gap-1 font-medium text-neutral-500 hover:text-neutral-900 disabled:opacity-50"
+              >
+                <Download size={12} />
+                {exporting ? "Exporting…" : "Export data"}
               </button>
-            )}
+              {onSignOut && (
+                <button onClick={onSignOut} className="shrink-0 font-medium text-neutral-500 hover:text-red-500">
+                  Sign out
+                </button>
+              )}
+            </div>
+            {exportError && <span className="text-red-500">{exportError}</span>}
           </div>
         ) : (
           "Synced to your account."
