@@ -12,28 +12,28 @@ const QUADRANTS: {
     title: "Do",
     hint: "Urgent & important",
     match: (t) => !!t.urgent && !!t.important,
-    style: "border-red-100 bg-red-50/40",
+    style: "border-red-100 bg-red-50/40 dark:border-red-900/60 dark:bg-red-950/30",
   },
   {
     key: "schedule",
     title: "Schedule",
     hint: "Important, not urgent",
     match: (t) => !t.urgent && !!t.important,
-    style: "border-blue-100 bg-blue-50/40",
+    style: "border-blue-100 bg-blue-50/40 dark:border-blue-900/60 dark:bg-blue-950/30",
   },
   {
     key: "delegate",
     title: "Delegate",
     hint: "Urgent, not important",
     match: (t) => !!t.urgent && !t.important,
-    style: "border-amber-100 bg-amber-50/40",
+    style: "border-amber-100 bg-amber-50/40 dark:border-amber-900/60 dark:bg-amber-950/30",
   },
   {
     key: "delete",
     title: "Delete",
     hint: "Neither urgent nor important",
     match: (t) => !t.urgent && !t.important,
-    style: "border-neutral-200 bg-neutral-50",
+    style: "border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900",
   },
 ];
 
@@ -56,19 +56,22 @@ export function EisenhowerMatrix({
         const items = open.filter(q.match);
         return (
           <div key={q.key} className={`rounded-xl border p-4 ${q.style}`}>
-            <p className="text-sm font-semibold text-neutral-800">{q.title}</p>
-            <p className="mb-3 text-xs text-neutral-400">{q.hint}</p>
+            <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">{q.title}</p>
+            <p className="mb-3 text-xs text-neutral-400 dark:text-neutral-500">{q.hint}</p>
             {items.length === 0 ? (
-              <p className="text-xs text-neutral-400">Nothing here.</p>
+              <p className="text-xs text-neutral-400 dark:text-neutral-500">Nothing here.</p>
             ) : (
               <div className="flex flex-col gap-1.5">
                 {items.map((t) => (
-                  <label key={t.id} className="flex items-center gap-2 text-sm text-neutral-700">
+                  <label
+                    key={t.id}
+                    className="flex items-center gap-2 text-sm text-neutral-700 dark:text-neutral-300"
+                  >
                     <input
                       type="checkbox"
                       checked={t.done}
                       onChange={() => toggleDone(t.id)}
-                      className="h-3.5 w-3.5 rounded border-neutral-300"
+                      className="h-3.5 w-3.5 rounded border-neutral-300 dark:border-neutral-600 dark:bg-neutral-900"
                     />
                     {t.title}
                   </label>

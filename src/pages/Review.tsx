@@ -46,10 +46,10 @@ function ProgressRow({ label, pct, color }: { label: string; pct: number; color?
   return (
     <div>
       <div className="mb-1 flex items-center justify-between text-xs">
-        <span className="text-neutral-700">{label}</span>
-        <span className="text-neutral-400">{pct}%</span>
+        <span className="text-neutral-700 dark:text-neutral-300">{label}</span>
+        <span className="text-neutral-400 dark:text-neutral-500">{pct}%</span>
       </div>
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-100">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800">
         <div
           className="h-full rounded-full"
           style={{ width: `${pct}%`, backgroundColor: color ?? "#171717" }}
@@ -104,13 +104,15 @@ export function Review({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-1 w-fit">
+      <div className="flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-1 w-fit dark:border-neutral-700 dark:bg-neutral-900">
         {TABS.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
             className={`rounded-md px-3 py-1.5 text-xs font-medium ${
-              tab === t.key ? "bg-neutral-900 text-white" : "text-neutral-500 hover:bg-neutral-100"
+              tab === t.key
+                ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
+                : "text-neutral-500 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
             }`}
           >
             {t.label}
@@ -122,7 +124,7 @@ export function Review({
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card title="Habit consistency (7 days)">
             {habits.length === 0 ? (
-              <p className="py-4 text-center text-sm text-neutral-400">No habits tracked yet.</p>
+              <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">No habits tracked yet.</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {habits.map((h) => (
@@ -138,10 +140,10 @@ export function Review({
           </Card>
 
           <Card title="Focus this week">
-            <p className="text-2xl font-semibold text-neutral-900">
+            <p className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">
               {focusHours(focusSessions, (t) => weekDays.includes(todayKey(new Date(t)))).toFixed(1)}h
             </p>
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
               {
                 focusSessions.filter(
                   (s) => !s.voided && s.mode === "pomodoro" && weekDays.includes(todayKey(new Date(s.completedAt))),
@@ -153,13 +155,13 @@ export function Review({
 
           <Card title="Renewing soon">
             {upcomingRenewals.length === 0 ? (
-              <p className="py-4 text-center text-sm text-neutral-400">Nothing renewing in the next 2 weeks.</p>
+              <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">Nothing renewing in the next 2 weeks.</p>
             ) : (
               <div className="flex flex-col gap-1.5">
                 {upcomingRenewals.map((s) => (
                   <div key={s.id} className="flex items-center justify-between text-xs">
-                    <span className="text-neutral-700">{s.name}</span>
-                    <span className="text-amber-600">
+                    <span className="text-neutral-700 dark:text-neutral-300">{s.name}</span>
+                    <span className="text-amber-600 dark:text-amber-400">
                       {s.remaining === 0 ? "Today" : `in ${s.remaining}d`}
                     </span>
                   </div>
@@ -170,15 +172,15 @@ export function Review({
 
           <Card title="People to reach out to">
             {neglectedContacts.length === 0 ? (
-              <p className="py-4 text-center text-sm text-neutral-400">
+              <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">
                 You're all caught up with your contacts.
               </p>
             ) : (
               <div className="flex flex-col gap-2">
                 {neglectedContacts.map((c) => (
                   <div key={c.id} className="flex items-center justify-between text-sm">
-                    <span className="text-neutral-700">{c.name}</span>
-                    <span className="text-xs text-neutral-400">
+                    <span className="text-neutral-700 dark:text-neutral-300">{c.name}</span>
+                    <span className="text-xs text-neutral-400 dark:text-neutral-500">
                       {c.since === null ? "Never contacted" : `${c.since}d ago`}
                     </span>
                   </div>
@@ -204,8 +206,8 @@ export function Review({
                   monthTx.filter((t) => t.type === "expense").reduce((s, t) => s + t.amount, 0);
                 return (
                   <>
-                    <p className="text-2xl font-semibold text-neutral-900">{net.toLocaleString()}</p>
-                    <p className="text-sm text-neutral-500">Net income vs. expense</p>
+                    <p className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">{net.toLocaleString()}</p>
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400">Net income vs. expense</p>
                   </>
                 );
               })()}
@@ -219,8 +221,8 @@ export function Review({
                   : 0;
                 return (
                   <>
-                    <p className="text-2xl font-semibold text-neutral-900">{avg.toFixed(1)}h</p>
-                    <p className="text-sm text-neutral-500">Average / night, {entries.length} nights logged</p>
+                    <p className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">{avg.toFixed(1)}h</p>
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400">Average / night, {entries.length} nights logged</p>
                   </>
                 );
               })()}
@@ -229,7 +231,7 @@ export function Review({
 
           <Card title="Habit consistency (30 days)">
             {habits.length === 0 ? (
-              <p className="py-4 text-center text-sm text-neutral-400">No habits tracked yet.</p>
+              <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">No habits tracked yet.</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {habits.map((h) => (
@@ -250,7 +252,7 @@ export function Review({
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card title="Goal progress — this quarter">
             {quarterGoals.length === 0 ? (
-              <p className="py-4 text-center text-sm text-neutral-400">No quarterly goals set.</p>
+              <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">No quarterly goals set.</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {quarterGoals.map((g) => (
@@ -265,10 +267,10 @@ export function Review({
           </Card>
 
           <Card title="Focus this quarter">
-            <p className="text-2xl font-semibold text-neutral-900">
+            <p className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">
               {focusHours(focusSessions, (t) => quarterKey(new Date(t)) === thisQuarter).toFixed(1)}h
             </p>
-            <p className="text-sm text-neutral-500">Logged across all Focus sessions</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Logged across all Focus sessions</p>
           </Card>
         </div>
       )}
@@ -277,7 +279,7 @@ export function Review({
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card title="Goal progress — this year">
             {yearGoals.length === 0 ? (
-              <p className="py-4 text-center text-sm text-neutral-400">No yearly goals set.</p>
+              <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">No yearly goals set.</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {yearGoals.map((g) => (
@@ -292,10 +294,10 @@ export function Review({
           </Card>
 
           <Card title="Focus this year">
-            <p className="text-2xl font-semibold text-neutral-900">
+            <p className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">
               {focusHours(focusSessions, (t) => yearKey(new Date(t)) === thisYear).toFixed(1)}h
             </p>
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
               {
                 focusSessions.filter(
                   (s) => !s.voided && s.mode === "pomodoro" && yearKey(new Date(s.completedAt)) === thisYear,
@@ -307,11 +309,11 @@ export function Review({
 
           <Card title="Wheel of life history" className="lg:col-span-2">
             {wheelEntries.length === 0 ? (
-              <p className="py-4 text-center text-sm text-neutral-400">
+              <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">
                 No check-ins yet — save one from the Monthly tab.
               </p>
             ) : (
-              <div className="flex flex-col divide-y divide-neutral-100">
+              <div className="flex flex-col divide-y divide-neutral-100 dark:divide-neutral-800">
                 {[...wheelEntries]
                   .sort((a, b) => b.monthKey.localeCompare(a.monthKey))
                   .map((entry) => {
@@ -320,7 +322,7 @@ export function Review({
                       WHEEL_CATEGORIES.length;
                     return (
                       <div key={entry.id} className="flex items-center justify-between py-2 text-sm">
-                        <span className="text-neutral-700">{entry.monthKey}</span>
+                        <span className="text-neutral-700 dark:text-neutral-300">{entry.monthKey}</span>
                         <span className="text-neutral-400">avg {avg.toFixed(1)}/10</span>
                       </div>
                     );

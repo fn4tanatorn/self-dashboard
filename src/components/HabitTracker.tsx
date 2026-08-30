@@ -65,12 +65,12 @@ export function HabitTracker({
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && addHabit()}
           placeholder="Add a habit to track…"
-          className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400"
+          className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <select
           value={routine}
           onChange={(e) => setRoutine(e.target.value as Routine | "anytime")}
-          className="rounded-lg border border-neutral-200 bg-white px-2 py-2 text-xs text-neutral-500"
+          className="rounded-lg border border-neutral-200 bg-white px-2 py-2 text-xs text-neutral-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400"
         >
           <option value="anytime">Anytime</option>
           <option value="morning">Morning</option>
@@ -79,14 +79,14 @@ export function HabitTracker({
         </select>
         <button
           onClick={addHabit}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
         </button>
       </div>
 
       {habits.length === 0 ? (
-        <p className="py-6 text-center text-sm text-neutral-400">
+        <p className="py-6 text-center text-sm text-neutral-400 dark:text-neutral-500">
           No habits yet — add one to start tracking streaks.
         </p>
       ) : (
@@ -94,11 +94,13 @@ export function HabitTracker({
           <table className="w-full border-separate border-spacing-y-1 text-sm">
             <thead>
               <tr>
-                <th className="text-left text-xs font-medium text-neutral-400">Habit</th>
+                <th className="text-left text-xs font-medium text-neutral-400 dark:text-neutral-500">
+                  Habit
+                </th>
                 {dateRange.map((d) => (
                   <th
                     key={d.toISOString()}
-                    className="w-8 text-center text-xs font-medium text-neutral-400"
+                    className="w-8 text-center text-xs font-medium text-neutral-400 dark:text-neutral-500"
                   >
                     {dayLabel(d)}
                   </th>
@@ -115,14 +117,14 @@ export function HabitTracker({
                     <tr>
                       <td
                         colSpan={dateRange.length + 2}
-                        className="pt-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400"
+                        className="pt-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-400 dark:text-neutral-500"
                       >
                         {group.label}
                       </td>
                     </tr>
                     {groupHabits.map((habit) => (
                       <tr key={habit.id} className="group">
-                        <td className="py-1 pr-3 font-medium text-neutral-700">
+                        <td className="py-1 pr-3 font-medium text-neutral-700 dark:text-neutral-300">
                           <span
                             className="mr-2 inline-block h-2 w-2 rounded-full align-middle"
                             style={{ backgroundColor: habit.color }}
@@ -136,7 +138,7 @@ export function HabitTracker({
                             <td key={key} className="text-center">
                               <button
                                 onClick={() => toggleDay(habit.id, key)}
-                                className="mx-auto flex h-6 w-6 items-center justify-center rounded-md border border-neutral-200 transition-colors"
+                                className="mx-auto flex h-6 w-6 items-center justify-center rounded-md border border-neutral-200 transition-colors dark:border-neutral-700"
                                 style={
                                   done
                                     ? { backgroundColor: habit.color, borderColor: habit.color }
@@ -149,7 +151,7 @@ export function HabitTracker({
                         <td>
                           <button
                             onClick={() => removeHabit(habit.id)}
-                            className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500"
+                            className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500 dark:text-neutral-600"
                           >
                             <Trash2 size={14} />
                           </button>
