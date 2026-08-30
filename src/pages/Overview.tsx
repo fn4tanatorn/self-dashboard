@@ -105,7 +105,7 @@ export function Overview({
         </Card>
         <Card title="Pinned notes">
           {notes.filter((n) => n.pinned).length === 0 ? (
-            <p className="py-4 text-center text-sm text-neutral-400">
+            <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">
               Pin a note to see it here.
             </p>
           ) : (
@@ -114,9 +114,9 @@ export function Overview({
                 .filter((n) => n.pinned)
                 .slice(0, 4)
                 .map((n) => (
-                  <div key={n.id} className="rounded-lg bg-neutral-50 p-3">
-                    <p className="text-sm font-medium text-neutral-800">{n.title}</p>
-                    <p className="line-clamp-2 text-xs text-neutral-500">{n.body}</p>
+                  <div key={n.id} className="rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
+                    <p className="text-sm font-medium text-neutral-800 dark:text-neutral-100">{n.title}</p>
+                    <p className="line-clamp-2 text-xs text-neutral-500 dark:text-neutral-400">{n.body}</p>
                   </div>
                 ))}
             </div>

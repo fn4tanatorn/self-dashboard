@@ -29,7 +29,7 @@ export function InterruptionLog({
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-xs text-neutral-400">
+      <p className="text-xs text-neutral-400 dark:text-neutral-500">
         A thought pulled your attention? Jot it in 3 seconds and get back to it.
       </p>
       <div className="flex items-center gap-2">
@@ -38,21 +38,21 @@ export function InterruptionLog({
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && log()}
           placeholder="What just interrupted you…"
-          className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400"
+          className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <button
           onClick={log}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
         </button>
       </div>
       {today.length > 0 && (
-        <div className="flex flex-col divide-y divide-neutral-100">
+        <div className="flex flex-col divide-y divide-neutral-100 dark:divide-neutral-800">
           {today.map((i) => (
             <div key={i.id} className="flex items-center justify-between py-1.5 text-xs">
-              <span className="text-neutral-600">{i.text}</span>
-              <span className="text-neutral-400">
+              <span className="text-neutral-600 dark:text-neutral-300">{i.text}</span>
+              <span className="text-neutral-400 dark:text-neutral-500">
                 {new Date(i.createdAt).toLocaleTimeString(undefined, {
                   hour: "2-digit",
                   minute: "2-digit",

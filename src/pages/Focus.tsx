@@ -62,7 +62,7 @@ export function Focus({
             disabled={timer.phase !== "idle"}
           />
           {selectedKey && (
-            <div className="mt-4 border-t border-neutral-100 pt-4">
+            <div className="mt-4 border-t border-neutral-100 pt-4 dark:border-neutral-800">
               <TaskDecomposition taskKey={selectedKey} subtasks={subtasks} setSubtasks={setSubtasks} />
             </div>
           )}
@@ -79,20 +79,22 @@ export function Focus({
 
       <Card title="Today's sessions">
         {todaySessions.length === 0 ? (
-          <p className="py-4 text-center text-sm text-neutral-400">
+          <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">
             No focus sessions yet today.
           </p>
         ) : (
-          <div className="flex flex-col divide-y divide-neutral-100">
+          <div className="flex flex-col divide-y divide-neutral-100 dark:divide-neutral-800">
             {todaySessions.map((s) => (
               <div key={s.id} className="flex items-center gap-3 py-2.5 text-sm">
-                <span className="flex-1 truncate text-neutral-700">
+                <span className="flex-1 truncate text-neutral-700 dark:text-neutral-300">
                   {s.taskLabel || "Untracked session"}
                 </span>
-                <span className="text-xs capitalize text-neutral-400">{s.mode}</span>
-                <span className="text-xs text-neutral-400">{formatClock(s.durationSec)}</span>
+                <span className="text-xs capitalize text-neutral-400 dark:text-neutral-500">{s.mode}</span>
+                <span className="text-xs text-neutral-400 dark:text-neutral-500">
+                  {formatClock(s.durationSec)}
+                </span>
                 {s.voided && (
-                  <span className="rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-medium text-red-500">
+                  <span className="rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-medium text-red-500 dark:bg-red-950 dark:text-red-400">
                     Voided
                   </span>
                 )}
