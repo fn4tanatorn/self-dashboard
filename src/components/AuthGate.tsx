@@ -17,6 +17,8 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -58,6 +60,19 @@ export function AuthGate({ children }: { children: ReactNode }) {
     else setSent(true);
   }
 
+  async function verifyCode() {
+    setVerifying(true);
+    setAuthError(null);
+    const { error } = await supabase.auth.verifyOtp({
+      email: email.trim(),
+      token: code.trim(),
+      type: "email",
+    });
+    setVerifying(false);
+    // On success, onAuthStateChange picks up the new session and this whole screen unmounts.
+    if (error) setAuthError(error.message);
+  }
+
   if (!session) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4 dark:bg-neutral-950">
@@ -72,14 +87,35 @@ export function AuthGate({ children }: { children: ReactNode }) {
           {sent ? (
             <>
               <p className="mb-1 text-sm text-neutral-700 dark:text-neutral-300">
-                Check <span className="font-medium">{email}</span> for a sign-in link.
+                Check <span className="font-medium">{email}</span> for a 6-digit code.
               </p>
               <p className="mb-3 text-xs text-neutral-400 dark:text-neutral-500">
-                Open the email on this device and tap the link — it'll bring you right back here,
-                signed in.
+                On iPhone home-screen apps, entering the code here is more reliable than tapping
+                the email link — that can open Safari instead of this app.
               </p>
+              <input
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                onKeyDown={(e) => e.key === "Enter" && code.trim() && verifyCode()}
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="123456"
+                autoFocus
+                className="mb-3 w-full rounded-lg border border-neutral-200 px-3 py-2 text-center text-lg tracking-[0.3em] placeholder:tracking-normal placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
+              />
               <button
-                onClick={() => setSent(false)}
+                onClick={verifyCode}
+                disabled={verifying || code.trim().length < 6}
+                className="mb-3 w-full rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+              >
+                {verifying ? "Verifying…" : "Verify code"}
+              </button>
+              <button
+                onClick={() => {
+                  setSent(false);
+                  setCode("");
+                }}
                 className="w-full text-xs text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
               >
                 Use a different email
@@ -88,7 +124,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
           ) : (
             <>
               <p className="mb-3 text-sm text-neutral-500 dark:text-neutral-400">
-                Sign in to sync your dashboard across devices — we'll email you a link, no
+                Sign in to sync your dashboard across devices — we'll email you a 6-digit code, no
                 password needed.
               </p>
               <input
@@ -105,7 +141,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
                 disabled={sending || !email.trim()}
                 className="w-full rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
               >
-                {sending ? "Sending…" : "Send sign-in link"}
+                {sending ? "Sending…" : "Send code"}
               </button>
             </>
           )}

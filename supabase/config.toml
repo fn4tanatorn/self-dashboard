@@ -248,6 +248,14 @@ otp_expiry = 3600
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
 
+# Shows the 6-digit OTP code prominently (the default template only shows a magic-link
+# button) — needed because tapping the link from an iOS home-screen web app can open
+# Safari instead of the installed app, breaking the "sign in and land back in the app"
+# flow. The code can be typed directly into the app instead.
+[auth.email.template.magic_link]
+subject = "Your Self sign-in code"
+content_path = "./supabase/templates/magic_link.html"
+
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
 # enabled = true
