@@ -32,6 +32,17 @@ export function notificationPermission(): NotificationPermission | "unsupported"
   return Notification.permission;
 }
 
+// A lightweight ask, decoupled from subscribeToPush()'s full push-subscription
+// setup (which needs a session + Supabase round trip) — this is all a local,
+// same-device popup needs. Called from a click handler so the prompt still
+// counts as user-gesture-triggered in browsers that require that.
+export async function requestNotificationPermission(): Promise<void> {
+  if (!notificationsSupported()) return;
+  if (Notification.permission === "default") {
+    await Notification.requestPermission();
+  }
+}
+
 export async function subscribeToPush(): Promise<void> {
   if (!notificationsSupported()) throw new Error("Push notifications aren't supported here");
 

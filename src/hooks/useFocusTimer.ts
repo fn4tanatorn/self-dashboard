@@ -8,7 +8,12 @@ import {
   POMODORO_SHORT_BREAK_SEC,
   flowtimeBreakSec,
 } from "../lib/focus";
-import { cancelNotification, notificationPermission, scheduleNotification } from "../lib/push";
+import {
+  cancelNotification,
+  notificationPermission,
+  requestNotificationPermission,
+  scheduleNotification,
+} from "../lib/push";
 import type { FocusSession, TimerMode } from "../types";
 
 export type FocusPhase = "idle" | "focus" | "break";
@@ -35,18 +40,23 @@ function playChime() {
   try {
     const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     const ctx = new AudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = "sine";
-    osc.frequency.value = 880;
-    gain.gain.setValueAtTime(0.001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.6);
-    osc.onended = () => ctx.close();
+
+    // Two quick tones instead of one soft beep — easier to notice from another tab/app.
+    [880, 1175].forEach((freq, i) => {
+      const startAt = ctx.currentTime + i * 0.16;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.001, startAt);
+      gain.gain.exponentialRampToValueAtTime(0.7, startAt + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, startAt + 0.5);
+      osc.start(startAt);
+      osc.stop(startAt + 0.5);
+    });
+    setTimeout(() => ctx.close(), 900);
   } catch {
     // Web Audio unavailable — nothing to fall back to here, push notification still covers it
   }
@@ -157,6 +167,11 @@ export function useFocusTimer(
   }
 
   function start(key: string | null, label: string) {
+    // Fired from the Start button's click handler, so this still counts as
+    // user-gesture-triggered — the browser will actually show the permission
+    // prompt here instead of silently ignoring it.
+    requestNotificationPermission();
+
     setActiveTaskKey(key);
     setActiveTaskLabel(label);
     setPhase("focus");
