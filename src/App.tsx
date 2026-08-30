@@ -25,6 +25,7 @@ import { Schedule } from "./pages/Schedule";
 import { Shutdown } from "./pages/Shutdown";
 import { Vision } from "./pages/Vision";
 import type {
+  AiMessage,
   Contact,
   FocusSession,
   Goal,
@@ -94,6 +95,7 @@ export default function App() {
   const [shutdownItems, setShutdownItems] = useSyncedCollection<ShutdownItem>("shutdownItems");
   const [shutdownLogs, setShutdownLogs] = useSyncedCollection<ShutdownLog>("shutdownLogs");
   const [timeBlocks, setTimeBlocks] = useSyncedCollection<TimeBlock>("timeBlocks");
+  const [aiMessages, setAiMessages] = useSyncedCollection<AiMessage>("aiMessages");
   const todoist = useTodoist();
   const session = useSession();
   const focusTimer = useFocusTimer((completedSession) =>
@@ -153,6 +155,8 @@ export default function App() {
               setSleepEntries={setSleepEntries}
               wheelEntries={wheelEntries}
               setWheelEntries={setWheelEntries}
+              aiMessages={aiMessages}
+              setAiMessages={setAiMessages}
               todoist={todoist}
             />
           )}

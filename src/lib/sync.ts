@@ -6,6 +6,7 @@ export const SYNCED_COLLECTIONS = [
   "habits",
   "notes",
   "goals",
+  "aiMessages",
   "identities",
   "visionNotes",
   "transactions",

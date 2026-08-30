@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { callAiChat, type AnthropicContentBlock, type AnthropicMessage } from "../lib/aiChat";
 import { buildStateSnapshot, executeTool, TOOL_SCHEMAS, type ToolExecContext } from "../lib/aiChatTools";
-
-export interface DisplayMessage {
-  role: "user" | "assistant" | "system";
-  text: string;
-}
+import type { AiMessage } from "../types";
 
 const SYSTEM_PROMPT =
   "You are a helpful assistant embedded in the user's personal \"Life OS\" dashboard app. " +
@@ -19,18 +15,30 @@ const SYSTEM_PROMPT =
 
 const MAX_TOOL_ROUNDS = 5;
 
-export function useAiChat(ctx: ToolExecContext, model: string) {
-  const [messages, setMessages] = useState<DisplayMessage[]>([]);
+export function useAiChat(
+  ctx: ToolExecContext,
+  model: string,
+  messages: AiMessage[],
+  setMessages: (updater: (prev: AiMessage[]) => AiMessage[]) => void,
+) {
+  // The visible transcript is durable (synced like everything else), but the raw
+  // Anthropic-format history — including tool_use/tool_result blocks — is not: it
+  // resets on reload, so the model starts a fresh conversation while the user still
+  // sees prior turns. buildStateSnapshot re-grounds it in current app state either way.
   const [history, setHistory] = useState<AnthropicMessage[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function appendMessage(role: AiMessage["role"], text: string) {
+    setMessages((prev) => [...prev, { id: crypto.randomUUID(), role, text, createdAt: Date.now() }]);
+  }
 
   async function send(userText: string) {
     const text = userText.trim();
     if (!text || sending) return;
     setSending(true);
     setError(null);
-    setMessages((prev) => [...prev, { role: "user", text }]);
+    appendMessage("user", text);
 
     let convo: AnthropicMessage[] = [...history, { role: "user", content: text }];
     const system = `${SYSTEM_PROMPT}\n\n${buildStateSnapshot(ctx)}`;
@@ -44,10 +52,7 @@ export function useAiChat(ctx: ToolExecContext, model: string) {
           (b): b is { type: "text"; text: string } => b.type === "text",
         );
         if (textBlocks.length > 0) {
-          setMessages((prev) => [
-            ...prev,
-            { role: "assistant", text: textBlocks.map((b) => b.text).join("\n") },
-          ]);
+          appendMessage("assistant", textBlocks.map((b) => b.text).join("\n"));
         }
 
         const toolUseBlocks = resp.content.filter(
@@ -59,7 +64,7 @@ export function useAiChat(ctx: ToolExecContext, model: string) {
         const toolResults: AnthropicContentBlock[] = [];
         for (const tb of toolUseBlocks) {
           const { result, isError } = await executeTool(tb.name, tb.input, ctx);
-          setMessages((prev) => [...prev, { role: "system", text: result }]);
+          appendMessage("system", result);
           toolResults.push({ type: "tool_result", tool_use_id: tb.id, content: result, is_error: isError });
         }
         convo = [...convo, { role: "user", content: toolResults }];

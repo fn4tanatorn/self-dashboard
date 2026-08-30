@@ -164,6 +164,13 @@ export interface ShutdownLog {
   completedAt: number;
 }
 
+export interface AiMessage {
+  id: string;
+  role: "user" | "assistant" | "system";
+  text: string;
+  createdAt: number;
+}
+
 export interface TimeBlock {
   id: string;
   date: string; // YYYY-MM-DD

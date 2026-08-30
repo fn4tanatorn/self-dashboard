@@ -4,7 +4,7 @@ import { Card } from "../components/Card";
 import { useAiChat } from "../hooks/useAiChat";
 import type { useTodoist } from "../hooks/useTodoist";
 import { AI_MODELS, getAiModel, setAiModel } from "../lib/aiChat";
-import type { Contact, Goal, Habit, Note, SleepEntry, Subscription, Task, Transaction, WheelEntry } from "../types";
+import type { AiMessage, Contact, Goal, Habit, Note, SleepEntry, Subscription, Task, Transaction, WheelEntry } from "../types";
 
 export function Assistant({
   tasks,
@@ -25,6 +25,8 @@ export function Assistant({
   setSleepEntries,
   wheelEntries,
   setWheelEntries,
+  aiMessages,
+  setAiMessages,
   todoist,
 }: {
   tasks: Task[];
@@ -45,6 +47,8 @@ export function Assistant({
   setSleepEntries: (updater: (prev: SleepEntry[]) => SleepEntry[]) => void;
   wheelEntries: WheelEntry[];
   setWheelEntries: (updater: (prev: WheelEntry[]) => WheelEntry[]) => void;
+  aiMessages: AiMessage[];
+  setAiMessages: (updater: (prev: AiMessage[]) => AiMessage[]) => void;
   todoist: ReturnType<typeof useTodoist>;
 }) {
   const [model, setModel] = useState(getAiModel);
@@ -71,6 +75,8 @@ export function Assistant({
       todoist,
     },
     model,
+    aiMessages,
+    setAiMessages,
   );
   const [draft, setDraft] = useState("");
 
@@ -115,8 +121,8 @@ export function Assistant({
               ลองพิมพ์ เช่น "เพิ่ม task ซื้อของพรุ่งนี้" หรือ "มี task ค้างกี่อัน"
             </p>
           )}
-          {messages.map((m, i) => (
-            <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+          {messages.map((m) => (
+            <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[80%] rounded-xl px-3 py-2 text-sm whitespace-pre-wrap ${
                   m.role === "user"
