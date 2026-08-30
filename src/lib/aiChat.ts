@@ -1,5 +1,21 @@
 import { supabase } from "./push";
 
+export const AI_MODELS = [
+  { id: "claude-haiku-4-5-20251001", label: "Haiku 4.5 — fast & cheap" },
+  { id: "claude-sonnet-5", label: "Sonnet 5 — balanced" },
+  { id: "claude-opus-5", label: "Opus 5 — most capable" },
+] as const;
+
+const MODEL_KEY = "self.aiModel";
+
+export function getAiModel(): string {
+  return window.localStorage.getItem(MODEL_KEY) || AI_MODELS[0].id;
+}
+
+export function setAiModel(model: string): void {
+  window.localStorage.setItem(MODEL_KEY, model);
+}
+
 export interface AnthropicToolSchema {
   name: string;
   description: string;
@@ -30,6 +46,7 @@ export async function callAiChat(args: {
   system: string;
   messages: AnthropicMessage[];
   tools: AnthropicToolSchema[];
+  model?: string;
 }): Promise<AnthropicResponse> {
   const { data, error } = await supabase.functions.invoke("ai-chat", { body: args });
   if (error) throw new Error(error.message);

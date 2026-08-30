@@ -17,7 +17,7 @@ const SYSTEM_PROMPT =
 
 const MAX_TOOL_ROUNDS = 5;
 
-export function useAiChat(ctx: ToolExecContext) {
+export function useAiChat(ctx: ToolExecContext, model: string) {
   const [messages, setMessages] = useState<DisplayMessage[]>([]);
   const [history, setHistory] = useState<AnthropicMessage[]>([]);
   const [sending, setSending] = useState(false);
@@ -35,7 +35,7 @@ export function useAiChat(ctx: ToolExecContext) {
 
     try {
       for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-        const resp = await callAiChat({ system, messages: convo, tools: TOOL_SCHEMAS });
+        const resp = await callAiChat({ system, messages: convo, tools: TOOL_SCHEMAS, model });
         convo = [...convo, { role: "assistant", content: resp.content }];
 
         const textBlocks = resp.content.filter(

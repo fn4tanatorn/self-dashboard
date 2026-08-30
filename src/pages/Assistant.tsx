@@ -2,6 +2,7 @@ import { Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Card } from "../components/Card";
 import { useAiChat } from "../hooks/useAiChat";
+import { AI_MODELS, getAiModel, setAiModel } from "../lib/aiChat";
 import type { Goal, Habit, Note, Task } from "../types";
 
 export function Assistant({
@@ -23,17 +24,17 @@ export function Assistant({
   notes: Note[];
   setNotes: (updater: (prev: Note[]) => Note[]) => void;
 }) {
-  const { messages, sending, error, send } = useAiChat({
-    tasks,
-    setTasks,
-    goals,
-    setGoals,
-    habits,
-    setHabits,
-    notes,
-    setNotes,
-  });
+  const [model, setModel] = useState(getAiModel);
+  const { messages, sending, error, send } = useAiChat(
+    { tasks, setTasks, goals, setGoals, habits, setHabits, notes, setNotes },
+    model,
+  );
   const [draft, setDraft] = useState("");
+
+  function changeModel(next: string) {
+    setModel(next);
+    setAiModel(next);
+  }
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -43,7 +44,22 @@ export function Assistant({
   }
 
   return (
-    <Card title="AI Assistant">
+    <Card
+      title="AI Assistant"
+      action={
+        <select
+          value={model}
+          onChange={(e) => changeModel(e.target.value)}
+          className="rounded-lg border border-neutral-200 bg-white px-2 py-1.5 text-xs text-neutral-500"
+        >
+          {AI_MODELS.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.label}
+            </option>
+          ))}
+        </select>
+      }
+    >
       <div className="flex flex-col gap-3">
         <div className="flex max-h-[60vh] min-h-[240px] flex-col gap-2 overflow-y-auto rounded-lg bg-neutral-50 p-3">
           {messages.length === 0 && (
