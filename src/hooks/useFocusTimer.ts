@@ -62,9 +62,51 @@ function playChime() {
   }
 }
 
-async function notifyLocally(title: string, body: string) {
+// A single chime is easy to miss if you're not looking at the screen right
+// then. Repeat it until the user does literally anything on the page (click,
+// keypress) — that's a reliable "I noticed it" signal — capped so it can't
+// ring forever if they've stepped away entirely.
+let alarmIntervalId: number | null = null;
+let alarmDismissHandler: (() => void) | null = null;
+
+function stopAlarm() {
+  if (alarmIntervalId !== null) {
+    clearInterval(alarmIntervalId);
+    alarmIntervalId = null;
+  }
+  if (alarmDismissHandler) {
+    document.removeEventListener("click", alarmDismissHandler);
+    document.removeEventListener("keydown", alarmDismissHandler);
+    alarmDismissHandler = null;
+  }
+}
+
+function startAlarm() {
+  stopAlarm();
+  let rings = 0;
+  const MAX_RINGS = 10; // ~25s at 2.5s apart
   playChime();
-  if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+  rings++;
+  alarmIntervalId = window.setInterval(() => {
+    playChime();
+    rings++;
+    if (rings >= MAX_RINGS) stopAlarm();
+  }, 2500);
+  alarmDismissHandler = () => stopAlarm();
+  document.addEventListener("click", alarmDismissHandler);
+  document.addEventListener("keydown", alarmDismissHandler);
+}
+
+async function notifyLocally(title: string, body: string) {
+  startAlarm();
+  if (typeof Notification === "undefined" || Notification.permission !== "granted") {
+    console.warn(
+      `[focus-timer] Skipping popup notification — Notification.permission is "${
+        typeof Notification === "undefined" ? "unsupported" : Notification.permission
+      }" instead of "granted".`,
+    );
+    return;
+  }
   try {
     if ("serviceWorker" in navigator) {
       const registration = await navigator.serviceWorker.ready;
@@ -77,8 +119,9 @@ async function notifyLocally(title: string, body: string) {
     } else {
       new Notification(title, { body });
     }
-  } catch {
+  } catch (e) {
     // best-effort — the chime above is the primary, reliable signal
+    console.warn("[focus-timer] showNotification failed:", e);
   }
 }
 

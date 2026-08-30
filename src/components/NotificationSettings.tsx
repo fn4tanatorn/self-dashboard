@@ -1,15 +1,21 @@
-import { Bell, BellOff, BellRing } from "lucide-react";
+import { Bell, BellOff, BellRing, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
-import { isSubscribed, notificationsSupported, subscribeToPush } from "../lib/push";
+import { isSubscribed, notificationPermission, notificationsSupported, subscribeToPush } from "../lib/push";
 
 export function NotificationSettings() {
-  const [status, setStatus] = useState<"checking" | "off" | "on" | "unsupported">("checking");
+  const [status, setStatus] = useState<"checking" | "off" | "on" | "denied" | "unsupported">(
+    "checking",
+  );
   const [enabling, setEnabling] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!notificationsSupported()) {
       setStatus("unsupported");
+      return;
+    }
+    if (notificationPermission() === "denied") {
+      setStatus("denied");
       return;
     }
     isSubscribed().then((on) => setStatus(on ? "on" : "off"));
@@ -29,6 +35,19 @@ export function NotificationSettings() {
   }
 
   if (status === "checking") return null;
+
+  if (status === "denied") {
+    return (
+      <div className="mb-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <ShieldAlert size={16} className="mt-0.5 shrink-0" />
+        <span>
+          การแจ้งเตือนถูกบล็อกไว้ที่เบราว์เซอร์ — เป็นสาเหตุที่ popup ไม่ขึ้น เข้าไปที่ไอคอนกุญแจ/ตัวล็อกข้าง
+          URL แล้วเปลี่ยน Notifications เป็น Allow (บน Mac ให้เช็ค System Settings → Notifications ว่าเปิดให้
+          เบราว์เซอร์นี้ด้วย) แล้วรีโหลดหน้านี้
+        </span>
+      </div>
+    );
+  }
 
   if (status === "unsupported") {
     return (
