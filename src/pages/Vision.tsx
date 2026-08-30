@@ -1,8 +1,9 @@
 import { Card } from "../components/Card";
 import { Goals } from "../components/Goals";
 import { IdentityList } from "../components/IdentityList";
+import { ResidencyPrepStarter } from "../components/ResidencyPrepStarter";
 import { VisionBoard } from "../components/VisionBoard";
-import type { Goal, Identity, VisionNote } from "../types";
+import type { Goal, Identity, Task, VisionNote } from "../types";
 
 export function Vision({
   identities,
@@ -11,6 +12,7 @@ export function Vision({
   setVisionNotes,
   goals,
   setGoals,
+  setTasks,
 }: {
   identities: Identity[];
   setIdentities: (updater: (prev: Identity[]) => Identity[]) => void;
@@ -18,6 +20,7 @@ export function Vision({
   setVisionNotes: (updater: (prev: VisionNote[]) => VisionNote[]) => void;
   goals: Goal[];
   setGoals: (updater: (prev: Goal[]) => Goal[]) => void;
+  setTasks: (updater: (prev: Task[]) => Task[]) => void;
 }) {
   return (
     <div className="flex flex-col gap-6">
@@ -30,6 +33,7 @@ export function Vision({
       </Card>
 
       <Card title="Goals">
+        <ResidencyPrepStarter goals={goals} setGoals={setGoals} setTasks={setTasks} />
         <Goals goals={goals} setGoals={setGoals} />
       </Card>
     </div>

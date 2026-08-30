@@ -233,6 +233,7 @@ export default function App() {
               setVisionNotes={setVisionNotes}
               goals={goals}
               setGoals={setGoals}
+              setTasks={setTasks}
             />
           )}
           {page === "finances" && (
