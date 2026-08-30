@@ -52,7 +52,7 @@ export function Assistant({
   todoist: ReturnType<typeof useTodoist>;
 }) {
   const [model, setModel] = useState(getAiModel);
-  const { messages, sending, error, send } = useAiChat(
+  const { messages, sending, error, tokenUsage, send } = useAiChat(
     {
       tasks,
       setTasks,
@@ -113,6 +113,11 @@ export function Assistant({
         {todoist.connected && (
           <p className="text-xs text-neutral-400">
             เชื่อมกับ Todoist อยู่ — task ที่เพิ่ม/ทำเครื่องหมายเสร็จจากแชทนี้จะไปอยู่ใน Todoist ด้วย
+          </p>
+        )}
+        {tokenUsage > 0 && (
+          <p className="text-right text-[11px] text-neutral-300">
+            ~{tokenUsage.toLocaleString()} tokens this session
           </p>
         )}
         <div className="flex max-h-[60vh] min-h-[240px] flex-col gap-2 overflow-y-auto rounded-lg bg-neutral-50 p-3">
