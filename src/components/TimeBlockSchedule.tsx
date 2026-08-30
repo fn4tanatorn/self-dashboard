@@ -219,10 +219,14 @@ export function TimeBlockSchedule({
                 <div
                   key={event.id}
                   style={{ top, height }}
-                  className="absolute right-1 w-[47%] overflow-hidden rounded-md border border-dashed border-blue-300 bg-blue-50/60 px-2 py-1"
+                  onClick={() => onStartFocus?.(null, event.title)}
+                  title={onStartFocus ? "Start a focus session for this event" : undefined}
+                  className={`absolute right-1 w-[47%] overflow-hidden rounded-md border border-dashed border-blue-300 bg-blue-50/60 px-2 py-1 transition-transform dark:border-blue-700 dark:bg-blue-950/40 ${onStartFocus ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-md" : ""}`}
                 >
-                  <p className="truncate text-xs font-medium text-blue-700">{event.title}</p>
-                  <p className="truncate text-[10px] text-blue-400">
+                  <p className="truncate text-xs font-medium text-blue-700 dark:text-blue-300">
+                    {event.title}
+                  </p>
+                  <p className="truncate text-[10px] text-blue-400 dark:text-blue-500">
                     {event.startTime}–{event.endTime}
                   </p>
                 </div>
