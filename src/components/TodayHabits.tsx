@@ -27,7 +27,7 @@ export function TodayHabits({
 
   if (habits.length === 0) {
     return (
-      <p className="py-4 text-center text-sm text-neutral-400">
+      <p className="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">
         No habits yet — add one on the Habits page.
       </p>
     );
@@ -40,10 +40,10 @@ export function TodayHabits({
         if (groupHabits.length === 0) return null;
         return (
           <div key={group.key} className="flex flex-col">
-            <p className="pt-3 text-[11px] font-semibold uppercase tracking-wide text-neutral-400 first:pt-0">
+            <p className="pt-3 text-[11px] font-semibold uppercase tracking-wide text-neutral-400 first:pt-0 dark:text-neutral-500">
               {group.label}
             </p>
-            <div className="flex flex-col divide-y divide-neutral-100">
+            <div className="flex flex-col divide-y divide-neutral-100 dark:divide-neutral-800">
               {groupHabits.map((habit) => {
                 const done = !!habit.log[key];
                 return (
@@ -53,15 +53,15 @@ export function TodayHabits({
                     className="flex items-center gap-3 py-2.5 text-left"
                   >
                     <span
-                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors"
-                      style={
-                        done
-                          ? { backgroundColor: habit.color, borderColor: habit.color }
-                          : { borderColor: "#d4d4d4" }
-                      }
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors ${
+                        done ? "" : "border-neutral-300 dark:border-neutral-600"
+                      }`}
+                      style={done ? { backgroundColor: habit.color, borderColor: habit.color } : undefined}
                     />
                     <span
-                      className={`text-sm ${done ? "text-neutral-400 line-through" : "text-neutral-800"}`}
+                      className={`text-sm ${
+                        done ? "text-neutral-400 line-through dark:text-neutral-500" : "text-neutral-800 dark:text-neutral-100"
+                      }`}
                     >
                       {habit.name}
                     </span>

@@ -27,7 +27,7 @@ export function TaskPicker({
         const option = e.target.options[e.target.selectedIndex];
         onChange(key, key ? option.text : "");
       }}
-      className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-700 disabled:opacity-50"
+      className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-700 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200"
     >
       <option value="">No task — untracked session</option>
       {localOpen.length > 0 && (
