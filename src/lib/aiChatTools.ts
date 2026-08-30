@@ -1,6 +1,20 @@
 import { todayKey } from "./date";
 import type { AnthropicToolSchema } from "./aiChat";
+import type { TodoistTask } from "./todoist";
 import type { Goal, Habit, Note, Priority, Task } from "../types";
+
+interface TodoistCtx {
+  connected: boolean;
+  tasks: TodoistTask[];
+  addTask: (content: string, priority?: number) => Promise<void>;
+  toggleTask: (id: string, currentlyCompleted: boolean) => Promise<void>;
+}
+
+function priorityToTodoist(priority: unknown): number {
+  if (priority === "high") return 4;
+  if (priority === "low") return 1;
+  return 3;
+}
 
 export const TOOL_SCHEMAS: AnthropicToolSchema[] = [
   {
@@ -88,6 +102,7 @@ export interface ToolExecContext {
   setHabits: (updater: (prev: Habit[]) => Habit[]) => void;
   notes: Note[];
   setNotes: (updater: (prev: Note[]) => Note[]) => void;
+  todoist: TodoistCtx;
 }
 
 function fuzzyFind<T>(items: T[], query: string, field: (item: T) => string): T | undefined {
@@ -100,11 +115,22 @@ export interface ToolResult {
   isError?: boolean;
 }
 
-export function executeTool(name: string, input: Record<string, unknown>, ctx: ToolExecContext): ToolResult {
+export async function executeTool(
+  name: string,
+  input: Record<string, unknown>,
+  ctx: ToolExecContext,
+): Promise<ToolResult> {
   switch (name) {
     case "add_task": {
       const title = String(input.title ?? "").trim();
       if (!title) return { result: "Missing title", isError: true };
+      // Tasks page shows Todoist tasks (not the local synced ones) whenever Todoist is
+      // connected — writing to the wrong store here would silently "succeed" but never
+      // show up anywhere the user actually looks.
+      if (ctx.todoist.connected) {
+        await ctx.todoist.addTask(title, priorityToTodoist(input.priority));
+        return { result: `Added task "${title}" to Todoist` };
+      }
       ctx.setTasks((prev) => [
         {
           id: crypto.randomUUID(),
@@ -119,6 +145,16 @@ export function executeTool(name: string, input: Record<string, unknown>, ctx: T
       return { result: `Added task "${title}"` };
     }
     case "complete_task": {
+      if (ctx.todoist.connected) {
+        const match = fuzzyFind(
+          ctx.todoist.tasks.filter((t) => !t.isCompleted),
+          String(input.title ?? ""),
+          (t) => t.content,
+        );
+        if (!match) return { result: `No open Todoist task found matching "${input.title}"`, isError: true };
+        await ctx.todoist.toggleTask(match.id, false);
+        return { result: `Marked "${match.content}" as done in Todoist` };
+      }
       const match = fuzzyFind(ctx.tasks.filter((t) => !t.done), String(input.title ?? ""), (t) => t.title);
       if (!match) return { result: `No open task found matching "${input.title}"`, isError: true };
       ctx.setTasks((prev) => prev.map((t) => (t.id === match.id ? { ...t, done: true } : t)));
@@ -188,11 +224,21 @@ export function buildStateSnapshot(ctx: {
   goals: Goal[];
   habits: Habit[];
   notes: Note[];
+  todoist: TodoistCtx;
 }): string {
-  const openTasks = ctx.tasks.filter((t) => !t.done);
-  const taskLines = openTasks.length
-    ? openTasks.map((t) => `- ${t.title}${t.dueDate ? ` (due ${t.dueDate})` : ""} [${t.priority}]`).join("\n")
-    : "(none)";
+  const taskLines = ctx.todoist.connected
+    ? (() => {
+        const open = ctx.todoist.tasks.filter((t) => !t.isCompleted);
+        return open.length
+          ? open.map((t) => `- ${t.content}${t.due ? ` (due ${t.due.date})` : ""}`).join("\n")
+          : "(none)";
+      })()
+    : (() => {
+        const open = ctx.tasks.filter((t) => !t.done);
+        return open.length
+          ? open.map((t) => `- ${t.title}${t.dueDate ? ` (due ${t.dueDate})` : ""} [${t.priority}]`).join("\n")
+          : "(none)";
+      })();
 
   const goalLines = ctx.goals.length
     ? ctx.goals.map((g) => `- ${g.title}: ${g.progress}/${g.target} ${g.unit}`).join("\n")

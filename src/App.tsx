@@ -143,6 +143,7 @@ export default function App() {
               setHabits={setHabits}
               notes={notes}
               setNotes={setNotes}
+              todoist={todoist}
             />
           )}
           {page === "tasks" && (

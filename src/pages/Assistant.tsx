@@ -2,6 +2,7 @@ import { Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Card } from "../components/Card";
 import { useAiChat } from "../hooks/useAiChat";
+import type { useTodoist } from "../hooks/useTodoist";
 import { AI_MODELS, getAiModel, setAiModel } from "../lib/aiChat";
 import type { Goal, Habit, Note, Task } from "../types";
 
@@ -14,6 +15,7 @@ export function Assistant({
   setHabits,
   notes,
   setNotes,
+  todoist,
 }: {
   tasks: Task[];
   setTasks: (updater: (prev: Task[]) => Task[]) => void;
@@ -23,10 +25,11 @@ export function Assistant({
   setHabits: (updater: (prev: Habit[]) => Habit[]) => void;
   notes: Note[];
   setNotes: (updater: (prev: Note[]) => Note[]) => void;
+  todoist: ReturnType<typeof useTodoist>;
 }) {
   const [model, setModel] = useState(getAiModel);
   const { messages, sending, error, send } = useAiChat(
-    { tasks, setTasks, goals, setGoals, habits, setHabits, notes, setNotes },
+    { tasks, setTasks, goals, setGoals, habits, setHabits, notes, setNotes, todoist },
     model,
   );
   const [draft, setDraft] = useState("");
@@ -61,6 +64,11 @@ export function Assistant({
       }
     >
       <div className="flex flex-col gap-3">
+        {todoist.connected && (
+          <p className="text-xs text-neutral-400">
+            เชื่อมกับ Todoist อยู่ — task ที่เพิ่ม/ทำเครื่องหมายเสร็จจากแชทนี้จะไปอยู่ใน Todoist ด้วย
+          </p>
+        )}
         <div className="flex max-h-[60vh] min-h-[240px] flex-col gap-2 overflow-y-auto rounded-lg bg-neutral-50 p-3">
           {messages.length === 0 && (
             <p className="py-8 text-center text-sm text-neutral-400">

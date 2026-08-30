@@ -54,11 +54,12 @@ export function useAiChat(ctx: ToolExecContext, model: string) {
         );
         if (resp.stop_reason !== "tool_use" || toolUseBlocks.length === 0) break;
 
-        const toolResults: AnthropicContentBlock[] = toolUseBlocks.map((tb) => {
-          const { result, isError } = executeTool(tb.name, tb.input, ctx);
+        const toolResults: AnthropicContentBlock[] = [];
+        for (const tb of toolUseBlocks) {
+          const { result, isError } = await executeTool(tb.name, tb.input, ctx);
           setMessages((prev) => [...prev, { role: "system", text: result }]);
-          return { type: "tool_result", tool_use_id: tb.id, content: result, is_error: isError };
-        });
+          toolResults.push({ type: "tool_result", tool_use_id: tb.id, content: result, is_error: isError });
+        }
         convo = [...convo, { role: "user", content: toolResults }];
       }
       setHistory(convo);
