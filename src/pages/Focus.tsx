@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "../components/Card";
 import { FocusTimer } from "../components/FocusTimer";
 import { InterruptionLog } from "../components/InterruptionLog";
@@ -19,6 +19,8 @@ export function Focus({
   timer,
   interruptions,
   setInterruptions,
+  pendingTask,
+  onConsumePendingTask,
 }: {
   tasks: Task[];
   todoist: ReturnType<typeof useTodoist>;
@@ -28,9 +30,22 @@ export function Focus({
   timer: ReturnType<typeof useFocusTimer>;
   interruptions: Interruption[];
   setInterruptions: (updater: (prev: Interruption[]) => Interruption[]) => void;
+  pendingTask?: { key: string | null; label: string } | null;
+  onConsumePendingTask?: () => void;
 }) {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [selectedLabel, setSelectedLabel] = useState("");
+
+  // A time block clicked on the Schedule page hands off its task here — jump
+  // straight into a focus session instead of making the user re-pick it.
+  useEffect(() => {
+    if (!pendingTask) return;
+    setSelectedKey(pendingTask.key);
+    setSelectedLabel(pendingTask.label);
+    if (timer.phase === "idle") timer.start(pendingTask.key, pendingTask.label);
+    onConsumePendingTask?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingTask]);
 
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);

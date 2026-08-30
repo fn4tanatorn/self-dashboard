@@ -32,6 +32,7 @@ export function TimeBlockSchedule({
   date,
   setDate,
   calendarEvents = [],
+  onStartFocus,
 }: {
   blocks: TimeBlock[];
   setBlocks: (updater: (prev: TimeBlock[]) => TimeBlock[]) => void;
@@ -40,6 +41,7 @@ export function TimeBlockSchedule({
   date: string;
   setDate: (updater: (prev: string) => string) => void;
   calendarEvents?: CalendarEvent[];
+  onStartFocus?: (key: string | null, label: string) => void;
 }) {
   const [title, setTitle] = useState("");
   const [startTime, setStartTime] = useState("09:00");
@@ -179,14 +181,19 @@ export function TimeBlockSchedule({
               <div
                 key={block.id}
                 style={{ top, height, backgroundColor: `${color}1a`, borderColor: color }}
-                className="group absolute left-1 w-[47%] overflow-hidden rounded-md border px-2 py-1"
+                onClick={() => onStartFocus?.(block.taskKey, block.title)}
+                title={onStartFocus ? "Start a focus session for this block" : undefined}
+                className={`group absolute left-1 w-[47%] overflow-hidden rounded-md border px-2 py-1 transition-transform ${onStartFocus ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-md" : ""}`}
               >
                 <div className="flex items-start justify-between gap-1">
                   <p className="truncate text-xs font-medium" style={{ color }}>
                     {block.title}
                   </p>
                   <button
-                    onClick={() => removeBlock(block.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeBlock(block.id);
+                    }}
                     className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-400 hover:text-red-500"
                   >
                     <Trash2 size={12} />

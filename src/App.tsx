@@ -80,6 +80,14 @@ const MOBILE_PRIMARY_NAV: { key: PageKey; label: string; icon: typeof LayoutGrid
 export default function App() {
   const [page, setPage] = useState<PageKey>("overview");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [pendingFocusTask, setPendingFocusTask] = useState<{ key: string | null; label: string } | null>(
+    null,
+  );
+
+  function startFocusFor(key: string | null, label: string) {
+    setPendingFocusTask({ key, label });
+    setPage("focus");
+  }
   const [tasksView, setTasksView] = useState<"list" | "matrix">("list");
   const [tasks, setTasks] = useSyncedCollection<Task>("tasks");
   const [habits, setHabits] = useSyncedCollection<Habit>("habits");
@@ -250,7 +258,13 @@ export default function App() {
             </div>
           )}
           {page === "schedule" && (
-            <Schedule blocks={timeBlocks} setBlocks={setTimeBlocks} tasks={tasks} todoist={todoist} />
+            <Schedule
+              blocks={timeBlocks}
+              setBlocks={setTimeBlocks}
+              tasks={tasks}
+              todoist={todoist}
+              onStartFocus={startFocusFor}
+            />
           )}
           {page === "focus" && (
             <Focus
@@ -262,6 +276,8 @@ export default function App() {
               timer={focusTimer}
               interruptions={interruptions}
               setInterruptions={setInterruptions}
+              pendingTask={pendingFocusTask}
+              onConsumePendingTask={() => setPendingFocusTask(null)}
             />
           )}
           {page === "shutdown" && (
