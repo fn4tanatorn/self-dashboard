@@ -4,6 +4,7 @@ import {
   Compass,
   LayoutGrid,
   ListTodo,
+  MessageCircle,
   Moon,
   NotebookPen,
   RotateCcw,
@@ -15,6 +16,7 @@ import {
 
 export type PageKey =
   | "overview"
+  | "assistant"
   | "tasks"
   | "habits"
   | "schedule"
@@ -31,6 +33,7 @@ const GROUPS: { heading: string; items: { key: PageKey; label: string; icon: Luc
     heading: "Today",
     items: [
       { key: "overview", label: "Overview", icon: LayoutGrid },
+      { key: "assistant", label: "Assistant", icon: MessageCircle },
       { key: "tasks", label: "Tasks", icon: ListTodo },
       { key: "habits", label: "Habits", icon: CheckSquare },
       { key: "schedule", label: "Schedule", icon: CalendarClock },

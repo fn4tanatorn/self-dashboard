@@ -15,6 +15,7 @@ import { useSyncedCollection } from "./hooks/useSyncedCollection";
 import { useTodoist } from "./hooks/useTodoist";
 import { friendlyDate } from "./lib/date";
 import { supabase } from "./lib/push";
+import { Assistant } from "./pages/Assistant";
 import { Finances } from "./pages/Finances";
 import { Focus } from "./pages/Focus";
 import { Overview } from "./pages/Overview";
@@ -45,6 +46,7 @@ import type {
 
 const PAGE_TITLES: Record<PageKey, string> = {
   overview: "Overview",
+  assistant: "AI Assistant",
   tasks: "Tasks",
   habits: "Habits",
   schedule: "Schedule",
@@ -129,6 +131,18 @@ export default function App() {
               todoist={todoist}
               focusSessions={focusSessions}
               sleepEntries={sleepEntries}
+            />
+          )}
+          {page === "assistant" && (
+            <Assistant
+              tasks={tasks}
+              setTasks={setTasks}
+              goals={goals}
+              setGoals={setGoals}
+              habits={habits}
+              setHabits={setHabits}
+              notes={notes}
+              setNotes={setNotes}
             />
           )}
           {page === "tasks" && (
