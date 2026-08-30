@@ -26,7 +26,7 @@ function Column({
 
   return (
     <div className="flex-1">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
         {label}
       </p>
       <div className="mb-3 flex items-center gap-2">
@@ -35,32 +35,34 @@ function Column({
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && submit()}
           placeholder={kind === "vision" ? "Someday I will…" : "I never want to…"}
-          className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400"
+          className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <button
           onClick={submit}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
         </button>
       </div>
       <div className="flex flex-col gap-2">
         {items.length === 0 && (
-          <p className="py-2 text-center text-sm text-neutral-400">Nothing here yet.</p>
+          <p className="py-2 text-center text-sm text-neutral-400 dark:text-neutral-500">
+            Nothing here yet.
+          </p>
         )}
         {items.map((item) => (
           <div
             key={item.id}
             className={`group flex items-start justify-between gap-2 rounded-lg border p-3 text-sm ${
               kind === "vision"
-                ? "border-emerald-100 bg-emerald-50/50 text-emerald-900"
-                : "border-red-100 bg-red-50/50 text-red-900"
+                ? "border-emerald-100 bg-emerald-50/50 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-200"
+                : "border-red-100 bg-red-50/50 text-red-900 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200"
             }`}
           >
             <span>{item.text}</span>
             <button
               onClick={() => onRemove(item.id)}
-              className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100 text-neutral-400 hover:text-red-500"
+              className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100 text-neutral-400 hover:text-red-500 dark:text-neutral-500 dark:hover:text-red-400"
             >
               <Trash2 size={13} />
             </button>
