@@ -61,7 +61,7 @@ export function CommandPalette({ ctx }: { ctx: ToolExecContext }) {
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
-        className="w-full max-w-lg rounded-xl border border-neutral-200 bg-white p-2 shadow-xl"
+        className="w-full max-w-lg rounded-xl border border-neutral-200 bg-white p-2 shadow-xl dark:border-neutral-700 dark:bg-neutral-900"
       >
         <input
           ref={inputRef}
@@ -69,12 +69,12 @@ export function CommandPalette({ ctx }: { ctx: ToolExecContext }) {
           onChange={(e) => setValue(e.target.value)}
           placeholder='เพิ่ม task เช่น "ซื้อของพรุ่งนี้" หรือพิมพ์ "h: ชื่อ habit" เพื่อ log ว่าทำแล้ว'
           disabled={busy}
-          className="w-full rounded-lg px-3 py-2.5 text-sm text-neutral-800 outline-none placeholder:text-neutral-400 disabled:opacity-50"
+          className="w-full rounded-lg px-3 py-2.5 text-sm text-neutral-800 outline-none placeholder:text-neutral-400 disabled:opacity-50 dark:text-neutral-100 dark:placeholder:text-neutral-500"
         />
-        {error && <p className="px-3 pb-2 text-xs text-red-500">{error}</p>}
-        <div className="flex items-center justify-between px-3 pb-1.5 pt-1 text-[11px] text-neutral-300">
+        {error && <p className="px-3 pb-2 text-xs text-red-500 dark:text-red-400">{error}</p>}
+        <div className="flex items-center justify-between px-3 pb-1.5 pt-1 text-[11px] text-neutral-300 dark:text-neutral-600">
           <span>Enter เพื่อทำ · Esc เพื่อปิด</span>
-          <span className="rounded border border-neutral-200 px-1 py-0.5 font-mono">⌘K</span>
+          <span className="rounded border border-neutral-200 px-1 py-0.5 font-mono dark:border-neutral-700">⌘K</span>
         </div>
       </form>
     </div>

@@ -24,20 +24,23 @@ export function TodoistConnect({
 
   if (connected) {
     return (
-      <div className="mb-4 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm">
+      <div className="mb-4 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm dark:border-neutral-800 dark:bg-neutral-900">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-neutral-600">
+          <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-300">
             <CheckCircle2 size={16} className="text-emerald-500" />
             Connected to Todoist
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={onRefresh}
-              className="flex items-center gap-1 text-neutral-400 hover:text-neutral-700"
+              className="flex items-center gap-1 text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200"
             >
               <RefreshCw size={14} /> Refresh
             </button>
-            <button onClick={onDisconnect} className="text-neutral-400 hover:text-red-500">
+            <button
+              onClick={onDisconnect}
+              className="text-neutral-400 hover:text-red-500 dark:text-neutral-500 dark:hover:text-red-400"
+            >
               Disconnect
             </button>
           </div>
@@ -45,7 +48,7 @@ export function TodoistConnect({
         {onSyncAcrossDevices && !syncedAcrossDevices && (
           <button
             onClick={onSyncAcrossDevices}
-            className="mt-2 flex items-center gap-1 text-xs text-neutral-400 hover:text-neutral-700"
+            className="mt-2 flex items-center gap-1 text-xs text-neutral-400 hover:text-neutral-700 dark:text-neutral-500 dark:hover:text-neutral-200"
           >
             <Smartphone size={12} />
             Sync this token to your other devices too (stores it in your account instead of just
@@ -53,7 +56,7 @@ export function TodoistConnect({
           </button>
         )}
         {syncedAcrossDevices && (
-          <p className="mt-2 flex items-center gap-1 text-xs text-neutral-400">
+          <p className="mt-2 flex items-center gap-1 text-xs text-neutral-400 dark:text-neutral-500">
             <Smartphone size={12} />
             Synced — this token is also available on your other devices
           </p>
@@ -63,15 +66,15 @@ export function TodoistConnect({
   }
 
   return (
-    <div className="mb-4 rounded-xl border border-neutral-200 bg-white p-4">
-      <p className="mb-2 text-sm font-medium text-neutral-800">Connect Todoist</p>
-      <p className="mb-3 text-xs text-neutral-500">
+    <div className="mb-4 rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
+      <p className="mb-2 text-sm font-medium text-neutral-800 dark:text-neutral-100">Connect Todoist</p>
+      <p className="mb-3 text-xs text-neutral-500 dark:text-neutral-400">
         Paste your personal API token from{" "}
         <a
           href="https://app.todoist.com/app/settings/integrations/developer"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-0.5 underline hover:text-neutral-800"
+          className="inline-flex items-center gap-0.5 underline hover:text-neutral-800 dark:hover:text-neutral-100"
         >
           Todoist Settings → Integrations → Developer <ExternalLink size={11} />
         </a>
@@ -84,17 +87,17 @@ export function TodoistConnect({
           onKeyDown={(e) => e.key === "Enter" && draft.trim() && onConnect(draft.trim())}
           placeholder="Todoist API token"
           type="password"
-          className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400"
+          className="flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <button
           onClick={() => draft.trim() && onConnect(draft.trim())}
           disabled={checking}
-          className="rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50"
+          className="rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           {checking ? "Checking…" : "Connect"}
         </button>
       </div>
-      {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
+      {error && <p className="mt-2 text-xs text-red-500 dark:text-red-400">{error}</p>}
     </div>
   );
 }

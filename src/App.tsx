@@ -132,7 +132,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-neutral-50">
+    <div className="flex min-h-screen bg-neutral-50 dark:bg-neutral-950">
       <CommandPalette ctx={aiCtx} />
 
       <Sidebar
@@ -143,12 +143,12 @@ export default function App() {
       />
 
       <div className="flex-1 flex flex-col">
-        <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-5 md:px-10">
+        <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-5 dark:border-neutral-800 dark:bg-neutral-900 md:px-10">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-neutral-900">
+            <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
               {page === "overview" ? `${greeting()}` : PAGE_TITLES[page]}
             </h1>
-            <p className="text-sm text-neutral-400">{friendlyDate()}</p>
+            <p className="text-sm text-neutral-400 dark:text-neutral-500">{friendlyDate()}</p>
           </div>
         </header>
 
@@ -186,11 +186,13 @@ export default function App() {
                 onRefresh={todoist.refresh}
                 onSyncAcrossDevices={todoist.syncToOtherDevices}
               />
-              <div className="mb-4 flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-1 w-fit">
+              <div className="mb-4 flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-1 w-fit dark:border-neutral-800 dark:bg-neutral-900">
                 <button
                   onClick={() => setTasksView("list")}
                   className={`rounded-md px-3 py-1.5 text-xs font-medium ${
-                    tasksView === "list" ? "bg-neutral-900 text-white" : "text-neutral-500 hover:bg-neutral-100"
+                    tasksView === "list"
+                      ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
+                      : "text-neutral-500 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
                   }`}
                 >
                   List
@@ -198,7 +200,9 @@ export default function App() {
                 <button
                   onClick={() => setTasksView("matrix")}
                   className={`rounded-md px-3 py-1.5 text-xs font-medium ${
-                    tasksView === "matrix" ? "bg-neutral-900 text-white" : "text-neutral-500 hover:bg-neutral-100"
+                    tasksView === "matrix"
+                      ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
+                      : "text-neutral-500 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
                   }`}
                 >
                   Matrix
@@ -206,7 +210,7 @@ export default function App() {
               </div>
               {tasksView === "matrix" ? (
                 <Card title="Eisenhower Matrix">
-                  <p className="mb-3 text-xs text-neutral-400">
+                  <p className="mb-3 text-xs text-neutral-400 dark:text-neutral-500">
                     Local tasks only — Todoist tasks don't carry urgent/important flags.
                   </p>
                   <EisenhowerMatrix tasks={tasks} setTasks={setTasks} />
@@ -307,13 +311,13 @@ export default function App() {
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-around border-t border-neutral-200 bg-white py-2 md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-around border-t border-neutral-200 bg-white py-2 dark:border-neutral-800 dark:bg-neutral-900 md:hidden">
         {MOBILE_PRIMARY_NAV.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setPage(key)}
             className={`flex flex-col items-center gap-0.5 px-2 py-1 text-[11px] font-medium ${
-              page === key ? "text-neutral-900" : "text-neutral-400"
+              page === key ? "text-neutral-900 dark:text-neutral-50" : "text-neutral-400 dark:text-neutral-500"
             }`}
           >
             <Icon size={20} strokeWidth={page === key ? 2.5 : 2} />
@@ -323,7 +327,9 @@ export default function App() {
         <button
           onClick={() => setMobileMenuOpen(true)}
           className={`flex flex-col items-center gap-0.5 px-2 py-1 text-[11px] font-medium ${
-            !MOBILE_PRIMARY_NAV.some((n) => n.key === page) ? "text-neutral-900" : "text-neutral-400"
+            !MOBILE_PRIMARY_NAV.some((n) => n.key === page)
+              ? "text-neutral-900 dark:text-neutral-50"
+              : "text-neutral-400 dark:text-neutral-500"
           }`}
         >
           <Menu size={20} strokeWidth={!MOBILE_PRIMARY_NAV.some((n) => n.key === page) ? 2.5 : 2} />
@@ -351,7 +357,7 @@ export default function App() {
             />
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="absolute right-3 top-6 flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100"
+              className="absolute right-3 top-6 flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100 dark:text-neutral-500 dark:hover:bg-neutral-800"
             >
               <X size={18} />
             </button>

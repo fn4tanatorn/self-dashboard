@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  @apply bg-neutral-50 text-neutral-900;
+  @apply bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -23,6 +23,15 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: theme(colors.neutral.300);
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-thumb {
+    background: theme(colors.neutral.700);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: theme(colors.neutral.600);
+  }
 }
 
 input,
