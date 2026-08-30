@@ -34,14 +34,14 @@ export function ResidencyPrepStarter({
   }
 
   return (
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3">
-      <div className="flex items-center gap-2 text-sm text-neutral-600">
-        <Sparkles size={16} className="shrink-0 text-neutral-400" />
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 dark:border-neutral-700 dark:bg-neutral-900">
+      <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
+        <Sparkles size={16} className="shrink-0 text-neutral-400 dark:text-neutral-500" />
         เริ่มต้นเตรียมสมัครแพทย์ประจำบ้าน — สร้าง Goals + Tasks ตัวอย่างให้ทันที (แก้ตัวเลข/วันที่เองได้ทีหลัง)
       </div>
       <button
         onClick={seed}
-        className="shrink-0 rounded-lg bg-neutral-900 px-3 py-2 text-xs font-medium text-white hover:bg-neutral-700"
+        className="shrink-0 rounded-lg bg-neutral-900 px-3 py-2 text-xs font-medium text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
       >
         เริ่มเลย
       </button>
