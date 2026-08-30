@@ -143,6 +143,16 @@ export default function App() {
               setHabits={setHabits}
               notes={notes}
               setNotes={setNotes}
+              transactions={transactions}
+              setTransactions={setTransactions}
+              subscriptions={subscriptions}
+              setSubscriptions={setSubscriptions}
+              contacts={contacts}
+              setContacts={setContacts}
+              sleepEntries={sleepEntries}
+              setSleepEntries={setSleepEntries}
+              wheelEntries={wheelEntries}
+              setWheelEntries={setWheelEntries}
               todoist={todoist}
             />
           )}

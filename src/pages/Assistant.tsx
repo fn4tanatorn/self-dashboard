@@ -4,7 +4,7 @@ import { Card } from "../components/Card";
 import { useAiChat } from "../hooks/useAiChat";
 import type { useTodoist } from "../hooks/useTodoist";
 import { AI_MODELS, getAiModel, setAiModel } from "../lib/aiChat";
-import type { Goal, Habit, Note, Task } from "../types";
+import type { Contact, Goal, Habit, Note, SleepEntry, Subscription, Task, Transaction, WheelEntry } from "../types";
 
 export function Assistant({
   tasks,
@@ -15,6 +15,16 @@ export function Assistant({
   setHabits,
   notes,
   setNotes,
+  transactions,
+  setTransactions,
+  subscriptions,
+  setSubscriptions,
+  contacts,
+  setContacts,
+  sleepEntries,
+  setSleepEntries,
+  wheelEntries,
+  setWheelEntries,
   todoist,
 }: {
   tasks: Task[];
@@ -25,11 +35,41 @@ export function Assistant({
   setHabits: (updater: (prev: Habit[]) => Habit[]) => void;
   notes: Note[];
   setNotes: (updater: (prev: Note[]) => Note[]) => void;
+  transactions: Transaction[];
+  setTransactions: (updater: (prev: Transaction[]) => Transaction[]) => void;
+  subscriptions: Subscription[];
+  setSubscriptions: (updater: (prev: Subscription[]) => Subscription[]) => void;
+  contacts: Contact[];
+  setContacts: (updater: (prev: Contact[]) => Contact[]) => void;
+  sleepEntries: SleepEntry[];
+  setSleepEntries: (updater: (prev: SleepEntry[]) => SleepEntry[]) => void;
+  wheelEntries: WheelEntry[];
+  setWheelEntries: (updater: (prev: WheelEntry[]) => WheelEntry[]) => void;
   todoist: ReturnType<typeof useTodoist>;
 }) {
   const [model, setModel] = useState(getAiModel);
   const { messages, sending, error, send } = useAiChat(
-    { tasks, setTasks, goals, setGoals, habits, setHabits, notes, setNotes, todoist },
+    {
+      tasks,
+      setTasks,
+      goals,
+      setGoals,
+      habits,
+      setHabits,
+      notes,
+      setNotes,
+      transactions,
+      setTransactions,
+      subscriptions,
+      setSubscriptions,
+      contacts,
+      setContacts,
+      sleepEntries,
+      setSleepEntries,
+      wheelEntries,
+      setWheelEntries,
+      todoist,
+    },
     model,
   );
   const [draft, setDraft] = useState("");

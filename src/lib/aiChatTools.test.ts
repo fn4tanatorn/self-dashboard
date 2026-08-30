@@ -1,5 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { fuzzyFind, priorityToTodoist } from "./aiChatTools";
+import { buildStateSnapshot, fuzzyFind, priorityToTodoist } from "./aiChatTools";
+import { monthKey } from "./date";
+
+const todoist = { connected: false, tasks: [], addTask: async () => {}, toggleTask: async () => {} };
+
+function baseCtx() {
+  return {
+    tasks: [],
+    goals: [],
+    habits: [],
+    notes: [],
+    transactions: [],
+    subscriptions: [],
+    contacts: [],
+    sleepEntries: [],
+    wheelEntries: [],
+    todoist,
+  };
+}
 
 describe("priorityToTodoist", () => {
   it("maps the string priorities to Todoist's numeric scale", () => {
@@ -29,5 +47,57 @@ describe("fuzzyFind", () => {
 
   it("returns undefined when nothing matches", () => {
     expect(fuzzyFind(items, "spaceship", (i) => i.title)).toBeUndefined();
+  });
+});
+
+describe("buildStateSnapshot", () => {
+  it("sums this month's income and expenses, ignoring other months", () => {
+    const thisMonth = monthKey();
+    const ctx = {
+      ...baseCtx(),
+      transactions: [
+        { id: "1", type: "income" as const, amount: 1000, category: "Salary", note: "", date: `${thisMonth}-01`, createdAt: 0 },
+        { id: "2", type: "expense" as const, amount: 300, category: "Food", note: "", date: `${thisMonth}-02`, createdAt: 0 },
+        { id: "3", type: "expense" as const, amount: 5000, category: "Rent", note: "", date: "2000-01-01", createdAt: 0 },
+      ],
+    };
+    const snapshot = buildStateSnapshot(ctx);
+    expect(snapshot).toContain(`Income 1000, expenses 300 this month (${thisMonth})`);
+  });
+
+  it("lists subscriptions sorted by soonest renewal", () => {
+    const ctx = {
+      ...baseCtx(),
+      subscriptions: [
+        { id: "1", name: "Late one", amount: 10, cycle: "monthly" as const, nextRenewal: "2099-01-01", createdAt: 0 },
+        { id: "2", name: "Soon one", amount: 5, cycle: "yearly" as const, nextRenewal: "2026-01-01", createdAt: 0 },
+      ],
+    };
+    const snapshot = buildStateSnapshot(ctx);
+    const soonIdx = snapshot.indexOf("Soon one");
+    const lateIdx = snapshot.indexOf("Late one");
+    expect(soonIdx).toBeGreaterThan(-1);
+    expect(soonIdx).toBeLessThan(lateIdx);
+  });
+
+  it("falls back to placeholders when a collection is empty", () => {
+    const snapshot = buildStateSnapshot(baseCtx());
+    expect(snapshot).toContain("Subscriptions:\n(none)");
+    expect(snapshot).toContain("Contacts:\n(none)");
+    expect(snapshot).toContain("Sleep: (none logged)");
+    expect(snapshot).toContain("Wheel of life: (no check-in yet)");
+  });
+
+  it("summarizes the latest wheel-of-life check-in", () => {
+    const ctx = {
+      ...baseCtx(),
+      wheelEntries: [
+        { id: "1", monthKey: "2026-07", scores: { health: 3 } as never, createdAt: 0 },
+        { id: "2", monthKey: "2026-08", scores: { health: 8 } as never, createdAt: 0 },
+      ],
+    };
+    const snapshot = buildStateSnapshot(ctx);
+    expect(snapshot).toContain("Latest check-in (2026-08)");
+    expect(snapshot).toContain("health 8");
   });
 });
