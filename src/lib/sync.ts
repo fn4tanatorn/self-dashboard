@@ -7,6 +7,7 @@ export const SYNCED_COLLECTIONS = [
   "notes",
   "goals",
   "aiMessages",
+  "settings",
   "identities",
   "visionNotes",
   "transactions",
