@@ -39,6 +39,7 @@ export interface AnthropicMessage {
 interface AnthropicResponse {
   content: AnthropicContentBlock[];
   stop_reason: string;
+  usage?: { input_tokens: number; output_tokens: number };
   error?: { message: string };
 }
 

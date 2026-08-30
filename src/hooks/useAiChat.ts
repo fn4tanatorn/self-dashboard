@@ -28,6 +28,7 @@ export function useAiChat(
   const [history, setHistory] = useState<AnthropicMessage[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tokenUsage, setTokenUsage] = useState(0);
 
   function appendMessage(role: AiMessage["role"], text: string) {
     setMessages((prev) => [...prev, { id: crypto.randomUUID(), role, text, createdAt: Date.now() }]);
@@ -47,6 +48,9 @@ export function useAiChat(
       for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
         const resp = await callAiChat({ system, messages: convo, tools: TOOL_SCHEMAS, model });
         convo = [...convo, { role: "assistant", content: resp.content }];
+        if (resp.usage) {
+          setTokenUsage((prev) => prev + resp.usage!.input_tokens + resp.usage!.output_tokens);
+        }
 
         const textBlocks = resp.content.filter(
           (b): b is { type: "text"; text: string } => b.type === "text",
@@ -77,5 +81,5 @@ export function useAiChat(
     }
   }
 
-  return { messages, sending, error, send };
+  return { messages, sending, error, tokenUsage, send };
 }
