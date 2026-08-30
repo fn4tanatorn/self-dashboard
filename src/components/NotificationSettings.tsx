@@ -1,5 +1,6 @@
 import { Bell, BellOff, BellRing, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
+import { sendTestNotification } from "../hooks/useFocusTimer";
 import { isSubscribed, notificationPermission, notificationsSupported, subscribeToPush } from "../lib/push";
 
 export function NotificationSettings() {
@@ -61,10 +62,18 @@ export function NotificationSettings() {
 
   if (status === "on") {
     return (
-      <div className="mb-4 flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-600">
-        <BellRing size={16} className="text-emerald-500" />
-        Timer notifications are on — you'll get an alert when a focus session ends, even if this
-        tab is closed.
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-600">
+        <div className="flex items-center gap-2">
+          <BellRing size={16} className="text-emerald-500" />
+          Timer notifications are on — you'll get an alert when a focus session ends, even if this
+          tab is closed.
+        </div>
+        <button
+          onClick={sendTestNotification}
+          className="shrink-0 rounded-lg border border-neutral-200 px-3 py-2 text-xs font-medium text-neutral-500 hover:bg-neutral-50"
+        >
+          Send test
+        </button>
       </div>
     );
   }

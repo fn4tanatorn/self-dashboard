@@ -125,6 +125,10 @@ async function notifyLocally(title: string, body: string) {
   }
 }
 
+export function sendTestNotification() {
+  notifyLocally("Test notification", "If you can see and hear this, notifications are working.");
+}
+
 export function useFocusTimer(
   onSessionComplete: (session: Omit<FocusSession, "id">) => void,
 ) {
