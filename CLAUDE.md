@@ -22,10 +22,13 @@ npm run dev      # local dev server
 npx tsc -b       # typecheck (also what `npm run build` runs first)
 npm run build    # tsc -b && vite build
 npm run lint     # oxlint
+npm test         # vitest run — unit tests for pure logic (src/**/*.test.ts)
 ```
 
-There is currently no test runner configured — treat `tsc -b` + `lint` + `build` as the full
-verification bar until one exists.
+Test coverage is intentionally thin — a handful of unit tests on pure functions (date helpers,
+fuzzy matching, sync diffing), not component or integration tests. Treat `lint` + `test` +
+`build` as the full verification bar before opening a PR; extend the test suite alongside new
+pure logic rather than leaving it to drift from the code it should be covering.
 
 ## Architecture
 

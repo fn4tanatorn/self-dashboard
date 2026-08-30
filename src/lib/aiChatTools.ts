@@ -10,7 +10,7 @@ interface TodoistCtx {
   toggleTask: (id: string, currentlyCompleted: boolean) => Promise<void>;
 }
 
-function priorityToTodoist(priority: unknown): number {
+export function priorityToTodoist(priority: unknown): number {
   if (priority === "high") return 4;
   if (priority === "low") return 1;
   return 3;
@@ -105,7 +105,7 @@ export interface ToolExecContext {
   todoist: TodoistCtx;
 }
 
-function fuzzyFind<T>(items: T[], query: string, field: (item: T) => string): T | undefined {
+export function fuzzyFind<T>(items: T[], query: string, field: (item: T) => string): T | undefined {
   const q = query.trim().toLowerCase();
   return items.find((item) => field(item).toLowerCase().includes(q));
 }
