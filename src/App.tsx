@@ -28,6 +28,7 @@ import { Shutdown } from "./pages/Shutdown";
 import { Vision } from "./pages/Vision";
 import type {
   AiMessage,
+  AppSettings,
   Contact,
   FocusSession,
   Goal,
@@ -98,7 +99,11 @@ export default function App() {
   const [shutdownLogs, setShutdownLogs] = useSyncedCollection<ShutdownLog>("shutdownLogs");
   const [timeBlocks, setTimeBlocks] = useSyncedCollection<TimeBlock>("timeBlocks");
   const [aiMessages, setAiMessages] = useSyncedCollection<AiMessage>("aiMessages");
-  const todoist = useTodoist();
+  const [settings, setSettings] = useSyncedCollection<AppSettings>("settings");
+  const syncedTodoistToken = settings[0]?.todoistToken ?? null;
+  const todoist = useTodoist(syncedTodoistToken, (todoistToken) => {
+    setSettings((prev) => [{ ...(prev[0] ?? { id: "app" }), id: "app", todoistToken }]);
+  });
   const session = useSession();
   const focusTimer = useFocusTimer((completedSession) =>
     setFocusSessions((prev) => [{ id: crypto.randomUUID(), ...completedSession }, ...prev]),
@@ -175,9 +180,11 @@ export default function App() {
                 connected={todoist.connected}
                 checking={todoist.checking}
                 error={todoist.error}
+                syncedAcrossDevices={todoist.syncedAcrossDevices}
                 onConnect={todoist.connect}
                 onDisconnect={todoist.disconnect}
                 onRefresh={todoist.refresh}
+                onSyncAcrossDevices={todoist.syncToOtherDevices}
               />
               <div className="mb-4 flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-1 w-fit">
                 <button

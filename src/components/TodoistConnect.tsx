@@ -1,41 +1,63 @@
-import { CheckCircle2, ExternalLink, RefreshCw } from "lucide-react";
+import { CheckCircle2, ExternalLink, RefreshCw, Smartphone } from "lucide-react";
 import { useState } from "react";
 
 export function TodoistConnect({
   connected,
   checking,
   error,
+  syncedAcrossDevices,
   onConnect,
   onDisconnect,
   onRefresh,
+  onSyncAcrossDevices,
 }: {
   connected: boolean;
   checking: boolean;
   error: string | null;
+  syncedAcrossDevices?: boolean;
   onConnect: (token: string) => void;
   onDisconnect: () => void;
   onRefresh: () => void;
+  onSyncAcrossDevices?: () => void;
 }) {
   const [draft, setDraft] = useState("");
 
   if (connected) {
     return (
-      <div className="mb-4 flex items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm">
-        <div className="flex items-center gap-2 text-neutral-600">
-          <CheckCircle2 size={16} className="text-emerald-500" />
-          Connected to Todoist
+      <div className="mb-4 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-neutral-600">
+            <CheckCircle2 size={16} className="text-emerald-500" />
+            Connected to Todoist
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onRefresh}
+              className="flex items-center gap-1 text-neutral-400 hover:text-neutral-700"
+            >
+              <RefreshCw size={14} /> Refresh
+            </button>
+            <button onClick={onDisconnect} className="text-neutral-400 hover:text-red-500">
+              Disconnect
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
+        {onSyncAcrossDevices && !syncedAcrossDevices && (
           <button
-            onClick={onRefresh}
-            className="flex items-center gap-1 text-neutral-400 hover:text-neutral-700"
+            onClick={onSyncAcrossDevices}
+            className="mt-2 flex items-center gap-1 text-xs text-neutral-400 hover:text-neutral-700"
           >
-            <RefreshCw size={14} /> Refresh
+            <Smartphone size={12} />
+            Sync this token to your other devices too (stores it in your account instead of just
+            this browser)
           </button>
-          <button onClick={onDisconnect} className="text-neutral-400 hover:text-red-500">
-            Disconnect
-          </button>
-        </div>
+        )}
+        {syncedAcrossDevices && (
+          <p className="mt-2 flex items-center gap-1 text-xs text-neutral-400">
+            <Smartphone size={12} />
+            Synced — this token is also available on your other devices
+          </p>
+        )}
       </div>
     );
   }

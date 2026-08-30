@@ -13,7 +13,10 @@ import {
   type TodoistTask,
 } from "../lib/todoist";
 
-export function useTodoist() {
+export function useTodoist(
+  syncedToken?: string | null,
+  onSyncToken?: (token: string | null) => void,
+) {
   const [token, setTokenState] = useState(getTodoistToken());
   const [connected, setConnected] = useState(false);
   const [checking, setChecking] = useState(false);
@@ -21,6 +24,17 @@ export function useTodoist() {
   const [stats, setStats] = useState<TodoistProductivity | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // A device with no local token but an opted-in synced one (from another device)
+  // picks it up automatically — this is the only automatic part; pushing a token
+  // *into* the synced collection always requires the explicit syncToOtherDevices() call.
+  useEffect(() => {
+    if (!token && syncedToken) {
+      setTodoistToken(syncedToken);
+      setTokenState(syncedToken);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [syncedToken]);
 
   const refresh = useCallback(async () => {
     if (!getTodoistToken()) return;
@@ -65,6 +79,11 @@ export function useTodoist() {
     setTasks([]);
     setStats(null);
     setConnected(false);
+    if (syncedToken) onSyncToken?.(null);
+  }
+
+  function syncToOtherDevices() {
+    onSyncToken?.(token);
   }
 
   async function addTask(content: string, priority = 1) {
@@ -115,8 +134,10 @@ export function useTodoist() {
     stats,
     loading,
     error,
+    syncedAcrossDevices: !!syncedToken && syncedToken === token,
     connect,
     disconnect,
+    syncToOtherDevices,
     refresh,
     addTask,
     toggleTask,

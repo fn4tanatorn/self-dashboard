@@ -164,6 +164,11 @@ export interface ShutdownLog {
   completedAt: number;
 }
 
+export interface AppSettings {
+  id: "app";
+  todoistToken: string | null;
+}
+
 export interface AiMessage {
   id: string;
   role: "user" | "assistant" | "system";
