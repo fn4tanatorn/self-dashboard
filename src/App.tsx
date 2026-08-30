@@ -1,6 +1,7 @@
 import { CheckSquare, LayoutGrid, ListTodo, Menu, Timer, X } from "lucide-react";
 import { useState } from "react";
 import { Card } from "./components/Card";
+import { CommandPalette } from "./components/CommandPalette";
 import { EisenhowerMatrix } from "./components/EisenhowerMatrix";
 import { HabitTracker } from "./components/HabitTracker";
 import { Notes } from "./components/Notes";
@@ -13,6 +14,7 @@ import { useFocusTimer } from "./hooks/useFocusTimer";
 import { useSession } from "./hooks/useSession";
 import { useSyncedCollection } from "./hooks/useSyncedCollection";
 import { useTodoist } from "./hooks/useTodoist";
+import type { ToolExecContext } from "./lib/aiChatTools";
 import { friendlyDate } from "./lib/date";
 import { supabase } from "./lib/push";
 import { Assistant } from "./pages/Assistant";
@@ -102,8 +104,32 @@ export default function App() {
     setFocusSessions((prev) => [{ id: crypto.randomUUID(), ...completedSession }, ...prev]),
   );
 
+  const aiCtx: ToolExecContext = {
+    tasks,
+    setTasks,
+    goals,
+    setGoals,
+    habits,
+    setHabits,
+    notes,
+    setNotes,
+    transactions,
+    setTransactions,
+    subscriptions,
+    setSubscriptions,
+    contacts,
+    setContacts,
+    sleepEntries,
+    setSleepEntries,
+    wheelEntries,
+    setWheelEntries,
+    todoist,
+  };
+
   return (
     <div className="flex min-h-screen bg-neutral-50">
+      <CommandPalette ctx={aiCtx} />
+
       <Sidebar
         active={page}
         onNavigate={setPage}
@@ -137,27 +163,10 @@ export default function App() {
           )}
           {page === "assistant" && (
             <Assistant
-              tasks={tasks}
-              setTasks={setTasks}
-              goals={goals}
-              setGoals={setGoals}
-              habits={habits}
-              setHabits={setHabits}
-              notes={notes}
-              setNotes={setNotes}
-              transactions={transactions}
-              setTransactions={setTransactions}
-              subscriptions={subscriptions}
-              setSubscriptions={setSubscriptions}
-              contacts={contacts}
-              setContacts={setContacts}
-              sleepEntries={sleepEntries}
-              setSleepEntries={setSleepEntries}
-              wheelEntries={wheelEntries}
-              setWheelEntries={setWheelEntries}
+              {...aiCtx}
+              todoist={todoist}
               aiMessages={aiMessages}
               setAiMessages={setAiMessages}
-              todoist={todoist}
             />
           )}
           {page === "tasks" && (
