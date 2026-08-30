@@ -39,12 +39,12 @@ export function SleepLog({
           placeholder="Hours slept last night"
           type="number"
           step="0.5"
-          className="w-44 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400"
+          className="w-44 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <select
           value={quality}
           onChange={(e) => setQuality(Number(e.target.value))}
-          className="rounded-lg border border-neutral-200 bg-white px-2 py-2 text-xs text-neutral-500"
+          className="rounded-lg border border-neutral-200 bg-white px-2 py-2 text-xs text-neutral-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400"
         >
           {[1, 2, 3, 4, 5].map((q) => (
             <option key={q} value={q}>
@@ -54,7 +54,7 @@ export function SleepLog({
         </select>
         <button
           onClick={log}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
         </button>
@@ -66,13 +66,13 @@ export function SleepLog({
           const pct = entry ? Math.min(100, (entry.hours / SLEEP_TARGET_HOURS) * 100) : 0;
           return (
             <div key={date} className="flex flex-1 flex-col items-center gap-1">
-              <div className="flex h-16 w-full items-end rounded bg-neutral-100">
+              <div className="flex h-16 w-full items-end rounded bg-neutral-100 dark:bg-neutral-800">
                 <div
-                  className="w-full rounded bg-neutral-900"
+                  className="w-full rounded bg-neutral-900 dark:bg-neutral-100"
                   style={{ height: `${pct}%` }}
                 />
               </div>
-              <span className="text-[10px] text-neutral-400">
+              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
                 {entry ? entry.hours : "—"}
               </span>
             </div>

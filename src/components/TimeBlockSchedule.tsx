@@ -84,24 +84,24 @@ export function TimeBlockSchedule({
         <div className="flex items-center gap-1">
           <button
             onClick={() => setDate((d) => addDays(d, -1))}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 hover:bg-neutral-50"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
           >
             <ChevronLeft size={15} />
           </button>
           <button
             onClick={() => setDate(() => todayKey())}
-            className="rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-50"
+            className="rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
             Today
           </button>
           <button
             onClick={() => setDate((d) => addDays(d, 1))}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 hover:bg-neutral-50"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
           >
             <ChevronRight size={15} />
           </button>
         </div>
-        <span className="text-sm font-medium text-neutral-600">{date}</span>
+        <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">{date}</span>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -109,20 +109,20 @@ export function TimeBlockSchedule({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Block title"
-          className="min-w-[140px] flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400"
+          className="min-w-[140px] flex-1 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
         />
         <input
           value={startTime}
           onChange={(e) => setStartTime(e.target.value)}
           type="time"
-          className="rounded-lg border border-neutral-200 bg-white px-2 py-2 text-sm text-neutral-600"
+          className="rounded-lg border border-neutral-200 bg-white px-2 py-2 text-sm text-neutral-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300"
         />
-        <span className="text-neutral-300">–</span>
+        <span className="text-neutral-300 dark:text-neutral-600">–</span>
         <input
           value={endTime}
           onChange={(e) => setEndTime(e.target.value)}
           type="time"
-          className="rounded-lg border border-neutral-200 bg-white px-2 py-2 text-sm text-neutral-600"
+          className="rounded-lg border border-neutral-200 bg-white px-2 py-2 text-sm text-neutral-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300"
         />
         <div className="w-44">
           <TaskPicker
@@ -137,14 +137,14 @@ export function TimeBlockSchedule({
         </div>
         <button
           onClick={addBlock}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
         </button>
       </div>
 
-      <div className="relative flex max-h-[560px] overflow-y-auto rounded-lg border border-neutral-200">
-        <div className="shrink-0 border-r border-neutral-100">
+      <div className="relative flex max-h-[560px] overflow-y-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <div className="shrink-0 border-r border-neutral-100 dark:border-neutral-800">
           {Array.from({ length: totalSlots }, (_, i) => {
             const minutes = DAY_START_MIN + i * SLOT_MIN;
             const isHour = minutes % 60 === 0;
@@ -152,7 +152,7 @@ export function TimeBlockSchedule({
               <div
                 key={i}
                 style={{ height: ROW_HEIGHT }}
-                className="w-14 shrink-0 pr-2 text-right text-[10px] text-neutral-400"
+                className="w-14 shrink-0 pr-2 text-right text-[10px] text-neutral-400 dark:text-neutral-500"
               >
                 {isHour && (
                   <span className="relative -top-1.5">
@@ -168,7 +168,7 @@ export function TimeBlockSchedule({
             <div
               key={i}
               style={{ height: ROW_HEIGHT }}
-              className={`border-b ${(DAY_START_MIN + i * SLOT_MIN) % 60 === 0 ? "border-neutral-100" : "border-neutral-50"}`}
+              className={`border-b ${(DAY_START_MIN + i * SLOT_MIN) % 60 === 0 ? "border-neutral-100 dark:border-neutral-800" : "border-neutral-50 dark:border-neutral-900"}`}
             />
           ))}
           {dayBlocks.map((block, i) => {

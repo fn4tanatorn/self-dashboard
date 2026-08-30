@@ -49,8 +49,8 @@ export function RadarChart({
             key={ring}
             points={pts}
             fill="none"
-            stroke="#e5e5e5"
             strokeWidth={1}
+            className="stroke-neutral-200 dark:stroke-neutral-700"
           />
         );
       })}
@@ -64,17 +64,30 @@ export function RadarChart({
             y1={CENTER}
             x2={x}
             y2={y}
-            stroke="#e5e5e5"
             strokeWidth={1}
+            className="stroke-neutral-200 dark:stroke-neutral-700"
           />
         );
       })}
 
-      <polygon points={polygonPoints} fill="#171717" fillOpacity={0.12} stroke="#171717" strokeWidth={1.5} />
+      <polygon
+        points={polygonPoints}
+        fillOpacity={0.12}
+        strokeWidth={1.5}
+        className="fill-neutral-900 stroke-neutral-900 dark:fill-neutral-100 dark:stroke-neutral-100"
+      />
 
       {values.map((v, i) => {
         const [x, y] = pointFor(i, count, Math.max(0, Math.min(1, v / max)));
-        return <circle key={i} cx={x} cy={y} r={2.5} fill="#171717" />;
+        return (
+          <circle
+            key={i}
+            cx={x}
+            cy={y}
+            r={2.5}
+            className="fill-neutral-900 dark:fill-neutral-100"
+          />
+        );
       })}
 
       {labels.map((label, i) => {
@@ -85,10 +98,9 @@ export function RadarChart({
             x={x}
             y={y}
             fontSize={9}
-            fill="#737373"
             textAnchor={anchorFor(i, count)}
             dominantBaseline="middle"
-            className="capitalize"
+            className="capitalize fill-neutral-500 dark:fill-neutral-400"
           >
             {label}
           </text>
