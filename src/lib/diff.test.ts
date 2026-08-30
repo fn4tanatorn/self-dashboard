@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { diffCollection } from "./sync";
+import { diffCollection } from "./diff";
 
 interface Item {
   id: string;

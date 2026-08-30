@@ -1,3 +1,4 @@
+import { diffCollection } from "./diff";
 import { supabase } from "./push";
 
 export const SYNCED_COLLECTIONS = [
@@ -34,23 +35,6 @@ export async function fetchAllUserData(): Promise<Record<string, unknown[]>> {
     (grouped[row.collection] ??= []).push(row.data);
   }
   return grouped;
-}
-
-export function diffCollection<T extends { id: string }>(
-  prev: T[],
-  next: T[],
-): { changed: T[]; deletedIds: string[] } {
-  const prevMap = new Map(prev.map((i) => [i.id, i]));
-  const nextMap = new Map(next.map((i) => [i.id, i]));
-
-  const changed = next.filter((item) => {
-    const old = prevMap.get(item.id);
-    return !old || JSON.stringify(old) !== JSON.stringify(item);
-  });
-
-  const deletedIds = prev.filter((i) => !nextMap.has(i.id)).map((i) => i.id);
-
-  return { changed, deletedIds };
 }
 
 export async function pushCollectionDiff<T extends { id: string }>(
