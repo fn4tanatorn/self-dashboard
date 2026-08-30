@@ -6,7 +6,11 @@ single-user web app.
 
 - Live: https://fn4tanatorn.github.io/self-dashboard/
 - Deploy: GitHub Actions builds and publishes to GitHub Pages on every push to `main` ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)).
-- CI: every pull request runs typecheck + lint + build ([.github/workflows/ci.yml](.github/workflows/ci.yml)) — it must pass before merging.
+- CI: every pull request runs lint + test + build ([.github/workflows/ci.yml](.github/workflows/ci.yml)) — it must pass before merging.
+- `main` is branch-protected (PR required, CI must pass, enforced for admins too) — direct
+  pushes to `main` are rejected, including from the repo owner. Every change, including a
+  quick one made in an interactive session, goes: branch → push → `gh pr create` →
+  `gh pr merge` once CI is green.
 
 ## Stack
 
