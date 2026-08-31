@@ -50,6 +50,10 @@ export function Overview({
     ? todoist.tasks.length
     : tasks.filter((t) => !t.done).length;
 
+  const todoistTasksToday = todoist.tasks
+    .filter((t) => t.due?.date.startsWith(key))
+    .sort((a, b) => a.due!.date.localeCompare(b.due!.date) || b.priority - a.priority);
+
   const completedToday = todoist.connected
     ? (todoist.stats?.completedToday ?? "—")
     : tasks.filter(
@@ -92,7 +96,7 @@ export function Overview({
         >
           {todoist.connected ? (
             <TodoistTaskList
-              tasks={todoist.tasks}
+              tasks={todoistTasksToday}
               loading={todoist.loading}
               onAdd={todoist.addTask}
               onToggle={todoist.toggleTask}
