@@ -95,6 +95,7 @@ export function Goals({
         </select>
         <button
           onClick={addGoal}
+          aria-label="Add goal"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
@@ -134,6 +135,7 @@ export function Goals({
                   </div>
                   <button
                     onClick={() => removeGoal(goal.id)}
+                    aria-label={`Delete ${goal.title}`}
                     className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500 dark:text-neutral-600 dark:hover:text-red-400"
                   >
                     <Trash2 size={14} />
@@ -152,12 +154,14 @@ export function Goals({
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => step(goal.id, -1)}
+                      aria-label={`Decrease progress on ${goal.title}`}
                       className="flex h-6 w-6 items-center justify-center rounded-md border border-neutral-200 hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
                     >
                       <Minus size={12} />
                     </button>
                     <button
                       onClick={() => step(goal.id, 1)}
+                      aria-label={`Increase progress on ${goal.title}`}
                       className="flex h-6 w-6 items-center justify-center rounded-md border border-neutral-200 hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
                     >
                       <Plus size={12} />

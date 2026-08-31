@@ -39,6 +39,7 @@ function Column({
         />
         <button
           onClick={submit}
+          aria-label={kind === "vision" ? "Add vision" : "Add anti-vision"}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
@@ -62,6 +63,7 @@ function Column({
             <span>{item.text}</span>
             <button
               onClick={() => onRemove(item.id)}
+              aria-label={`Remove "${item.text}"`}
               className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100 text-neutral-400 hover:text-red-500 dark:text-neutral-500 dark:hover:text-red-400"
             >
               <Trash2 size={13} />

@@ -137,6 +137,7 @@ export function TimeBlockSchedule({
         </div>
         <button
           onClick={addBlock}
+          aria-label="Add time block"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
@@ -194,6 +195,7 @@ export function TimeBlockSchedule({
                       e.stopPropagation();
                       removeBlock(block.id);
                     }}
+                    aria-label={`Delete ${block.title}`}
                     className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-400 hover:text-red-500"
                   >
                     <Trash2 size={12} />

@@ -139,6 +139,7 @@ export function Notes({
                 <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                   <button
                     onClick={() => updateNote(note.id, { pinned: !note.pinned })}
+                    aria-label={note.pinned ? "Unpin note" : "Pin note"}
                     className={
                       note.pinned
                         ? "text-neutral-900 dark:text-neutral-100"
@@ -149,6 +150,7 @@ export function Notes({
                   </button>
                   <button
                     onClick={() => removeNote(note.id)}
+                    aria-label={`Delete note "${note.title || "Untitled"}"`}
                     className="text-neutral-300 hover:text-red-500 dark:text-neutral-600 dark:hover:text-red-400"
                   >
                     <Trash2 size={14} />

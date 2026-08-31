@@ -60,6 +60,7 @@ export function ShutdownRoutine({
         />
         <button
           onClick={addItem}
+          aria-label="Add shutdown step"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
@@ -102,6 +103,7 @@ export function ShutdownRoutine({
                   </span>
                   <button
                     onClick={() => removeItem(item.id)}
+                    aria-label={`Delete ${item.text}`}
                     className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500 dark:text-neutral-600 dark:hover:text-red-400"
                   >
                     <Trash2 size={15} />

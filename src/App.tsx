@@ -373,6 +373,7 @@ export default function App() {
             />
             <button
               onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close menu"
               className="absolute right-3 top-6 flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100 dark:text-neutral-500 dark:hover:bg-neutral-800"
             >
               <X size={18} />
