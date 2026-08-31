@@ -91,16 +91,16 @@ export function HabitTracker({
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-separate border-spacing-y-1 text-sm">
+          <table className="min-w-full border-separate border-spacing-y-1 text-sm">
             <thead>
               <tr>
-                <th className="text-left text-xs font-medium text-neutral-400 dark:text-neutral-500">
+                <th className="sticky left-0 whitespace-nowrap bg-white pr-3 text-left text-xs font-medium text-neutral-400 dark:bg-neutral-900 dark:text-neutral-500">
                   Habit
                 </th>
                 {dateRange.map((d) => (
                   <th
                     key={d.toISOString()}
-                    className="w-8 text-center text-xs font-medium text-neutral-400 dark:text-neutral-500"
+                    className="w-8 shrink-0 text-center text-xs font-medium text-neutral-400 dark:text-neutral-500"
                   >
                     {dayLabel(d)}
                   </th>
@@ -124,7 +124,7 @@ export function HabitTracker({
                     </tr>
                     {groupHabits.map((habit) => (
                       <tr key={habit.id} className="group">
-                        <td className="py-1 pr-3 font-medium text-neutral-700 dark:text-neutral-300">
+                        <td className="sticky left-0 whitespace-nowrap bg-white py-1 pr-3 font-medium text-neutral-700 dark:bg-neutral-900 dark:text-neutral-300">
                           <span
                             className="mr-2 inline-block h-2 w-2 rounded-full align-middle"
                             style={{ backgroundColor: habit.color }}
