@@ -151,7 +151,7 @@ export default function App() {
       />
 
       <div className="flex-1 flex flex-col">
-        <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-5 dark:border-neutral-800 dark:bg-neutral-900 md:px-10">
+        <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 pb-5 pt-[max(1.25rem,env(safe-area-inset-top))] dark:border-neutral-800 dark:bg-neutral-900 md:px-10 md:pt-5">
           <div>
             <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
               {page === "overview" ? `${greeting()}` : PAGE_TITLES[page]}
@@ -160,7 +160,7 @@ export default function App() {
           </div>
         </header>
 
-        <main className="flex-1 px-6 py-6 pb-20 md:px-10 md:pb-6">
+        <main className="flex-1 px-6 py-6 pb-[calc(5rem+env(safe-area-inset-bottom))] md:px-10 md:pb-6">
           {page === "overview" && (
             <Overview
               tasks={tasks}
@@ -327,7 +327,7 @@ export default function App() {
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-around border-t border-neutral-200 bg-white py-2 dark:border-neutral-800 dark:bg-neutral-900 md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-around border-t border-neutral-200 bg-white pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 dark:border-neutral-800 dark:bg-neutral-900 md:hidden">
         {MOBILE_PRIMARY_NAV.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
