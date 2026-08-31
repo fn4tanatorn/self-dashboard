@@ -80,6 +80,7 @@ export function TransactionList({
         />
         <button
           onClick={add}
+          aria-label="Add transaction"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
@@ -111,6 +112,7 @@ export function TransactionList({
             </span>
             <button
               onClick={() => remove(t.id)}
+              aria-label={`Delete transaction: ${t.note || t.category}`}
               className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500 dark:text-neutral-600 dark:hover:text-red-400"
             >
               <Trash2 size={14} />

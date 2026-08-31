@@ -97,6 +97,7 @@ export function TaskList({
         </select>
         <button
           onClick={addTask}
+          aria-label="Add task"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
@@ -117,6 +118,7 @@ export function TaskList({
                 {setSubtasks && (
                   <button
                     onClick={() => toggleExpanded(task.id)}
+                    aria-label={isExpanded ? "Collapse subtasks" : "Expand subtasks"}
                     className="shrink-0 text-neutral-300 hover:text-neutral-600 dark:text-neutral-600 dark:hover:text-neutral-300"
                   >
                     {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -124,6 +126,7 @@ export function TaskList({
                 )}
                 <button
                   onClick={() => toggleTask(task.id)}
+                  aria-label={task.done ? `Mark "${task.title}" as not done` : `Mark "${task.title}" as done`}
                   className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors ${
                     task.done
                       ? "border-neutral-900 bg-neutral-900 dark:border-neutral-100 dark:bg-neutral-100"
@@ -189,6 +192,7 @@ export function TaskList({
                 </button>
                 <button
                   onClick={() => removeTask(task.id)}
+                  aria-label={`Delete ${task.title}`}
                   className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500 dark:text-neutral-600 dark:hover:text-red-400"
                 >
                   <Trash2 size={15} />

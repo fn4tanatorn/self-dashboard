@@ -81,6 +81,7 @@ export function TodoistTaskList({
         </select>
         <button
           onClick={submit}
+          aria-label="Add task"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
@@ -104,6 +105,7 @@ export function TodoistTaskList({
                 {setSubtasks && (
                   <button
                     onClick={() => toggleExpanded(task.id)}
+                    aria-label={isExpanded ? "Collapse subtasks" : "Expand subtasks"}
                     className="shrink-0 text-neutral-300 hover:text-neutral-600 dark:text-neutral-600 dark:hover:text-neutral-300"
                   >
                     {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -111,6 +113,7 @@ export function TodoistTaskList({
                 )}
                 <button
                   onClick={() => onToggle(task.id, task.isCompleted)}
+                  aria-label={task.isCompleted ? `Mark "${task.content}" as not done` : `Mark "${task.content}" as done`}
                   className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-neutral-300 hover:border-neutral-500 dark:border-neutral-600 dark:hover:border-neutral-400"
                 />
                 <span className="flex-1 text-sm text-neutral-800 dark:text-neutral-100">{task.content}</span>
@@ -124,6 +127,7 @@ export function TodoistTaskList({
                 </span>
                 <button
                   onClick={() => onRemove(task.id)}
+                  aria-label={`Delete ${task.content}`}
                   className="opacity-0 transition-opacity group-hover:opacity-100 text-neutral-300 hover:text-red-500 dark:text-neutral-600 dark:hover:text-red-400"
                 >
                   <Trash2 size={15} />

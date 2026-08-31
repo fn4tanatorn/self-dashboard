@@ -42,6 +42,7 @@ export function InterruptionLog({
         />
         <button
           onClick={log}
+          aria-label="Log interruption"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
         >
           <Plus size={16} />
