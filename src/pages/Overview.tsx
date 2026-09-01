@@ -5,7 +5,7 @@ import { TaskList } from "../components/TaskList";
 import { TodayHabits } from "../components/TodayHabits";
 import { TodoistTaskList } from "../components/TodoistTaskList";
 import type { useTodoist } from "../hooks/useTodoist";
-import { todayKey } from "../lib/date";
+import { isToday, todayKey } from "../lib/date";
 import type { FocusSession, Goal, Habit, Note, SleepEntry, Task } from "../types";
 
 export function Overview({
@@ -52,9 +52,7 @@ export function Overview({
 
   const completedToday = todoist.connected
     ? (todoist.stats?.completedToday ?? "—")
-    : tasks.filter(
-        (t) => t.done && new Date(t.createdAt).toDateString() === new Date().toDateString(),
-      ).length;
+    : tasks.filter((t) => t.done && t.completedAt != null && isToday(t.completedAt)).length;
 
   return (
     <div className="flex flex-col gap-6">

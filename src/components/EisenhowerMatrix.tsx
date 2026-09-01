@@ -47,7 +47,11 @@ export function EisenhowerMatrix({
   const open = tasks.filter((t) => !t.done);
 
   function toggleDone(id: string) {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === id ? { ...t, done: !t.done, completedAt: t.done ? null : Date.now() } : t,
+      ),
+    );
   }
 
   return (

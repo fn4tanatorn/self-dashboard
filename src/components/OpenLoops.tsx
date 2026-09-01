@@ -17,7 +17,9 @@ export function OpenLoops({
     .sort((a, b) => (a.dueDate ?? "").localeCompare(b.dueDate ?? ""));
 
   function markDone(id: string) {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: true } : t)));
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, done: true, completedAt: Date.now() } : t)),
+    );
   }
 
   function pushToTomorrow(id: string) {
