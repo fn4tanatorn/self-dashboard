@@ -260,7 +260,9 @@ export async function executeTool(
       }
       const match = fuzzyFind(ctx.tasks.filter((t) => !t.done), String(input.title ?? ""), (t) => t.title);
       if (!match) return { result: `No open task found matching "${input.title}"`, isError: true };
-      ctx.setTasks((prev) => prev.map((t) => (t.id === match.id ? { ...t, done: true } : t)));
+      ctx.setTasks((prev) =>
+        prev.map((t) => (t.id === match.id ? { ...t, done: true, completedAt: Date.now() } : t)),
+      );
       return { result: `Marked "${match.title}" as done` };
     }
     case "add_goal": {

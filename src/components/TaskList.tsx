@@ -47,7 +47,9 @@ export function TaskList({
 
   function toggleTask(id: string) {
     setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)),
+      prev.map((t) =>
+        t.id === id ? { ...t, done: !t.done, completedAt: t.done ? null : Date.now() } : t,
+      ),
     );
   }
 

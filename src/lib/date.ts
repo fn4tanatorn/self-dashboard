@@ -33,6 +33,10 @@ export function isOverdue(dueDate: string | null): boolean {
   return dueDate < todayKey();
 }
 
+export function isToday(ms: number): boolean {
+  return todayKey(new Date(ms)) === todayKey();
+}
+
 export function monthKey(d: Date = new Date()): string {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");

@@ -4,6 +4,7 @@ import {
   daysUntil,
   daysUntilNextBirthday,
   isOverdue,
+  isToday,
   monthKey,
   quarterKey,
   todayKey,
@@ -52,6 +53,17 @@ describe("isOverdue", () => {
   it("is true for a date strictly before today", () => {
     const yesterday = todayKey(new Date(Date.now() - 86_400_000));
     expect(isOverdue(yesterday)).toBe(true);
+  });
+});
+
+describe("isToday", () => {
+  it("is true for a timestamp earlier today", () => {
+    expect(isToday(Date.now())).toBe(true);
+  });
+
+  it("is false for a timestamp on a different day", () => {
+    expect(isToday(Date.now() - 86_400_000)).toBe(false);
+    expect(isToday(Date.now() + 86_400_000)).toBe(false);
   });
 });
 
