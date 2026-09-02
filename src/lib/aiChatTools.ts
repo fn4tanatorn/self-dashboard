@@ -210,6 +210,7 @@ export interface ToolExecContext {
 
 export function fuzzyFind<T>(items: T[], query: string, field: (item: T) => string): T | undefined {
   const q = query.trim().toLowerCase();
+  if (!q) return undefined;
   return items.find((item) => field(item).toLowerCase().includes(q));
 }
 

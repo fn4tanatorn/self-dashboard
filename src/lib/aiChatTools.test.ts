@@ -48,6 +48,11 @@ describe("fuzzyFind", () => {
   it("returns undefined when nothing matches", () => {
     expect(fuzzyFind(items, "spaceship", (i) => i.title)).toBeUndefined();
   });
+
+  it("returns undefined for an empty or whitespace-only query instead of matching the first item", () => {
+    expect(fuzzyFind(items, "", (i) => i.title)).toBeUndefined();
+    expect(fuzzyFind(items, "   ", (i) => i.title)).toBeUndefined();
+  });
 });
 
 describe("buildStateSnapshot", () => {
