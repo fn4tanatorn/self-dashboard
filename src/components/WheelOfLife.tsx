@@ -15,11 +15,16 @@ export function WheelOfLife({
   entries: WheelEntry[];
   setEntries: (updater: (prev: WheelEntry[]) => WheelEntry[]) => void;
 }) {
-  const [scores, setScores] = useState<Record<WheelCategory, number>>(DEFAULT_SCORES);
-
   const sorted = [...entries].sort((a, b) => b.monthKey.localeCompare(a.monthKey));
   const latest = sorted[0];
   const thisMonth = monthKey();
+
+  // Seed the sliders from this month's existing check-in (if any) so reopening the card
+  // to tweak one category doesn't silently overwrite the rest with the default of 5.
+  const [scores, setScores] = useState<Record<WheelCategory, number>>(() => {
+    const existing = entries.find((e) => e.monthKey === thisMonth);
+    return existing ? { ...DEFAULT_SCORES, ...existing.scores } : DEFAULT_SCORES;
+  });
 
   function save() {
     setEntries((prev) => {
