@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildStateSnapshot, fuzzyFind, priorityToTodoist } from "./aiChatTools";
+import { buildStateSnapshot, executeTool, fuzzyFind, priorityToTodoist } from "./aiChatTools";
 import { monthKey } from "./date";
 
 const todoist = { connected: false, tasks: [], addTask: async () => {}, toggleTask: async () => {} };
@@ -47,6 +47,48 @@ describe("fuzzyFind", () => {
 
   it("returns undefined when nothing matches", () => {
     expect(fuzzyFind(items, "spaceship", (i) => i.title)).toBeUndefined();
+  });
+});
+
+describe("executeTool update_goal_progress", () => {
+  const noop = () => {};
+
+  function ctxWithGoals(goals: { id: string; title: string; target: number; progress: number; unit: string; createdAt: number }[]) {
+    let updated: typeof goals | undefined;
+    const ctx = {
+      ...baseCtx(),
+      goals,
+      setTasks: noop,
+      setGoals: (updater: (prev: typeof goals) => typeof goals) => {
+        updated = updater(goals);
+      },
+      setHabits: noop,
+      setNotes: noop,
+      setTransactions: noop,
+      setSubscriptions: noop,
+      setContacts: noop,
+      setSleepEntries: noop,
+      setWheelEntries: noop,
+    };
+    return { ctx, getUpdated: () => updated };
+  }
+
+  it("rejects a non-numeric progress value instead of storing NaN", async () => {
+    const { ctx, getUpdated } = ctxWithGoals([
+      { id: "1", title: "Read books", target: 12, progress: 3, unit: "books", createdAt: 0 },
+    ]);
+    const result = await executeTool("update_goal_progress", { title: "Read books", progress: "a lot" }, ctx);
+    expect(result.isError).toBe(true);
+    expect(getUpdated()).toBeUndefined();
+  });
+
+  it("clamps a valid progress value between 0 and the goal's target", async () => {
+    const { ctx, getUpdated } = ctxWithGoals([
+      { id: "1", title: "Read books", target: 12, progress: 3, unit: "books", createdAt: 0 },
+    ]);
+    const result = await executeTool("update_goal_progress", { title: "Read books", progress: 999 }, ctx);
+    expect(result.isError).toBeUndefined();
+    expect(getUpdated()?.[0].progress).toBe(12);
   });
 });
 
