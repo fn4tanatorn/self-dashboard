@@ -286,7 +286,11 @@ export async function executeTool(
     case "update_goal_progress": {
       const match = fuzzyFind(ctx.goals, String(input.title ?? ""), (g) => g.title);
       if (!match) return { result: `No goal found matching "${input.title}"`, isError: true };
-      const progress = Math.max(0, Math.min(match.target, Number(input.progress)));
+      const rawProgress = Number(input.progress);
+      if (!Number.isFinite(rawProgress)) {
+        return { result: `Invalid progress value "${input.progress}"`, isError: true };
+      }
+      const progress = Math.max(0, Math.min(match.target, rawProgress));
       ctx.setGoals((prev) => prev.map((g) => (g.id === match.id ? { ...g, progress } : g)));
       return { result: `Updated "${match.title}" progress to ${progress}/${match.target} ${match.unit}` };
     }
