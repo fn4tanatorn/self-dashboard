@@ -116,6 +116,13 @@ export async function deleteTask(id: string): Promise<void> {
   await request(`/tasks/${id}`, { method: "DELETE" });
 }
 
+export async function updateTaskDueDate(id: string, dueDate: string): Promise<void> {
+  await request(`/tasks/${id}`, {
+    method: "POST",
+    body: JSON.stringify({ due_date: dueDate }),
+  });
+}
+
 export interface TodoistProductivity {
   completedToday: number;
   dailyGoal: number;

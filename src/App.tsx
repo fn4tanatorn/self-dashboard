@@ -288,6 +288,7 @@ export default function App() {
               setLogs={setShutdownLogs}
               tasks={tasks}
               setTasks={setTasks}
+              todoist={todoist}
             />
           )}
           {page === "vision" && (

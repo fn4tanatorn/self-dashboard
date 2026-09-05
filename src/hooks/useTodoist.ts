@@ -8,6 +8,7 @@ import {
   listActiveTasks,
   reopenTask,
   setTodoistToken,
+  updateTaskDueDate,
   verifyToken,
   type TodoistProductivity,
   type TodoistTask,
@@ -127,6 +128,18 @@ export function useTodoist(
     }
   }
 
+  async function rescheduleTask(id: string, dueDate: string) {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, due: { date: dueDate, string: dueDate } } : t)),
+    );
+    try {
+      await updateTaskDueDate(id, dueDate);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to reschedule task");
+      refresh();
+    }
+  }
+
   return {
     connected,
     checking,
@@ -142,5 +155,6 @@ export function useTodoist(
     addTask,
     toggleTask,
     removeTask,
+    rescheduleTask,
   };
 }
